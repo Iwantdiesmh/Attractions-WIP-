@@ -41,7 +41,7 @@ ride is off""")
     
     def step(self):
         """checks which mode the cart is in for the attration and decides wether to move it to the next one"""
-        if self.on == True
+        if self.on == True:
             if self.loading == True and self.running == False:
                 self.time = self.time - 1
                 if self.time == 0:
@@ -52,13 +52,22 @@ ride is off""")
             elif self.running == True and self.loading == False:
                 self.time = self.time - 1
                 if self.time == 0:
-                    self.loading = True
-                    self.running = False
-                    self.time = self.loadtime
+                    if self.on == False:
+                        self.loading = False
+                        self.running = False
+                        self.in_action = 0
+                        
+                    else:
+                        self.time = self.loadtime
+                        self.loading = True
+                        self.running = False
                 
             else:
                 raise RuntimeError('shouldnt get here')
-            
+
+    def off(self):
+        self.line = 0
+        self.on = False
             
     def put_someone_in_line(self, count = 1):
         """add people to the line (self.line)"""
