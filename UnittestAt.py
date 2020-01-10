@@ -16,6 +16,7 @@ class Unittest(unittest.TestCase):
         self.assertEqual(at1.name, 'rollercoaster1')
         self.assertEqual(at1.line, 5)
         self.assertEqual(at1.in_action, 5)
+        self.assertEqual(at1.in_load, 0)
         self.assertEqual(at1.on, True)
         self.assertEqual(at1.loading, True)
         self.assertEqual(at1.running, False)
@@ -33,6 +34,7 @@ class Unittest(unittest.TestCase):
         self.assertEqual(at1.name, 'rollercoaster2')
         self.assertEqual(at1.line, 5)
         self.assertEqual(at1.in_action, 5)
+        self.assertEqual(at1.in_load, 0)
         self.assertEqual(at1.on, True)
         self.assertEqual(at1.loading, False)
         self.assertEqual(at1.running, True)
@@ -52,6 +54,7 @@ class Unittest(unittest.TestCase):
         self.assertEqual(at1.name, 'rollercoaster3')
         self.assertEqual(at1.line, 5)
         self.assertEqual(at1.in_action, 5)
+        self.assertEqual(at1.in_load, 0)
         self.assertEqual(at1.on, True)
         self.assertEqual(at1.loading, False)
         self.assertEqual(at1.running, True)
@@ -63,13 +66,14 @@ class Unittest(unittest.TestCase):
         at1.loading = False
         at1.running = True
         at1.step()
-        self.assertEqual(at1.time, 0)
+        self.assertEqual(at1.time, 1)
         self.assertEqual(at1.loadtime, 1)
         self.assertEqual(at1.duration, 5)
         self.assertEqual(at1.capacity, 25)
         self.assertEqual(at1.name, 'rollercoaster4')
-        self.assertEqual(at1.line, 5)
+        self.assertEqual(at1.line, 0)
         self.assertEqual(at1.in_action, 5)
+        self.assertEqual(at1.in_load, 0)
         self.assertEqual(at1.on, True)
         self.assertEqual(at1.loading, True)
         self.assertEqual(at1.running, False)        
@@ -79,7 +83,8 @@ class Unittest(unittest.TestCase):
         at1.line = 5
         at1.in_action = 0
         at1.time = 1
-        at1.on = False
+        at1.off()
+        at1.step()
         self.assertEqual(at1.time, 0)
         self.assertEqual(at1.loadtime, 1)
         self.assertEqual(at1.duration, 5)
@@ -87,8 +92,70 @@ class Unittest(unittest.TestCase):
         self.assertEqual(at1.name, 'rollercoaster52')
         self.assertEqual(at1.line, 0)
         self.assertEqual(at1.in_action, 0)
+        self.assertEqual(at1.in_load, 0)
         self.assertEqual(at1.on, False)
         self.assertEqual(at1.loading, False)
         self.assertEqual(at1.running, False)
-            
+        
+    def test_long_line(self):
+        at1 = Attraction(loadtime=1, duration=5, capacity=25, name='rollercoaster52')
+        at1.line = 30
+        at1.in_action = 0
+        at1.time = 1
+        at1.on = False
+        at1.run()
+        at1.step()
+        self.assertEqual(at1.time, 0)
+        self.assertEqual(at1.loadtime, 1)
+        self.assertEqual(at1.duration, 5)
+        self.assertEqual(at1.capacity, 25)
+        self.assertEqual(at1.name, 'rollercoaster52')
+        self.assertEqual(at1.line, 5)
+        self.assertEqual(at1.in_action, 25)
+        self.assertEqual(at1.in_load, 0)
+        self.assertEqual(at1.on, True)
+        self.assertEqual(at1.loading, False)
+        self.assertEqual(at1.running, True)
+        
+    def test_short_line(self):
+        at1 = Attraction(loadtime=1, duration=5, capacity=25, name='rollercoaster52')
+        at1.line = 3
+        at1.in_action = 0
+        at1.time = 1
+        at1.on = True
+        at1.loading = False
+        at1.running = True
+        at1.step()
+        self.assertEqual(at1.time, 1)
+        self.assertEqual(at1.loadtime, 1)
+        self.assertEqual(at1.duration, 5)
+        self.assertEqual(at1.capacity, 25)
+        self.assertEqual(at1.name, 'rollercoaster52')
+        self.assertEqual(at1.line, 0)
+        self.assertEqual(at1.in_action, 0)
+        self.assertEqual(at1.in_load, 3)
+        self.assertEqual(at1.on, True)
+        self.assertEqual(at1.loading, True)
+        self.assertEqual(at1.running, False)
+
+    def test_empty_line(self):
+        at1 = Attraction(loadtime=1, duration=5, capacity=25, name='rollercoaster52')
+        at1.line = 0
+        at1.in_action = 0
+        at1.time = 1
+        at1.on = False
+        at1.run()
+        at1.step()
+        self.assertEqual(at1.time, 0)
+        self.assertEqual(at1.loadtime, 1)
+        self.assertEqual(at1.duration, 5)
+        self.assertEqual(at1.capacity, 25)
+        self.assertEqual(at1.name, 'rollercoaster52')
+        self.assertEqual(at1.line, 0)
+        self.assertEqual(at1.in_action, 0)
+        self.assertEqual(at1.in_load, 0)
+        self.assertEqual(at1.on, True)
+        self.assertEqual(at1.loading, True)
+        self.assertEqual(at1.running, False)
+                         
 unittest.main(verbosity=2)
