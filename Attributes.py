@@ -9,10 +9,10 @@ class Attraction():
         self.capacity = int(capacity)
         self.line = 0
         self.in_action = 0
+        self.in_load = 0
         self.maxLine = 0
         self.minLine = 1000
-        self.maxCart = 0
-        self.minCart = self.capacity
+        self.maxCart = self.minCart = self.capacity
         self.name = name
         self.time = 0
         self.on = True
@@ -42,33 +42,66 @@ ride is off""")
     def step(self):
         """checks which mode the cart is in for the attration and decides wether to move it to the next one"""
         if self.on == True:
-            if self.loading == True and self.running == False:
-                self.time = self.time - 1
-                if self.time == 0:
-                    self.loading = False
-                    self.running = True
-                    self.time = self.duration
-                
-            elif self.running == True and self.loading == False:
-                self.time = self.time - 1
-                if self.time == 0:
-                    if self.on == False:
+            if self.line != 0:
+                if self.loading == True and self.running == False:
+                    self.time = self.time - 1
+                    if self.time == 0:
+                        self.time = self.duration
                         self.loading = False
-                        self.running = False
-                        self.in_action = 0
-                        
-                    else:
+                        self.running = True
+                        self.in_action = self.in_load
+                        self.in_load = 0
+                    
+                elif self.running == True and self.loading == False:
+                    self.time = self.time - 1
+                    if self.time == 0:
                         self.time = self.loadtime
                         self.loading = True
                         self.running = False
+                        self.in_action = 0
+                        if self.line < self.capacity:
+                            self.in_load = self.line
+                            self.line = 0
+                            
+                        else:
+                            self.line -= self.capacity
+                            self.in_action = self.capacity
+                    
+                else:
+                    raise RuntimeError('shouldnt get here')
                 
             else:
-                raise RuntimeError('shouldnt get here')
+                if self.loading == True and self.running == False:
+                    self.loading = False
+                    self.in_load = 0
+
+                else:
+                    self.time = self.time - 1
+                    if self.time == 0:
+                        self.time = self.loadtime
+                        self.loading = True
+                        self.running = False
+                        self.in_action = 0
+                        if self.line < self.capacity:
+                            self.in_loading = self.line
+                            self.loading = self.line
+                            self.line = 0
+                            
+                        else:
+                            self.line -= self.capacity
+                            self.in_action = self.capacity
 
     def off(self):
         self.line = 0
         self.on = False
-            
+        self.time = 0 #doesn't matter that much
+
+    def run(self):
+        self.on = True
+        self.loading = True
+        self.time = self.loadtime
+
+    
     def put_someone_in_line(self, count = 1):
         """add people to the line (self.line)"""
         self.line += int(count)
