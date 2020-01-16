@@ -1,6 +1,5 @@
 """module that sets up each ride and its attributes"""
-from time import time
-
+# pylint: disable=too-many-instance-attributes
 class Attraction():
     """main class for the attributes"""
     def __init__(self, loadtime, duration, capacity, name):
@@ -18,11 +17,11 @@ class Attraction():
         self.on = True
         self.loading = True
         self.running = False
-        
+
     def stats(self):
         """tells you each countable statistic"""
         print('line length:', self.line)
-        print('people on the ride:', self.inaction)
+        print('people on the ride:', self.in_action)
         print('largest number of people in the line:', self.maxLine)
         print('least number of people in line:', self.minLine)
         if self.on == True:
@@ -32,7 +31,7 @@ class Attraction():
             print("""---Status---
 ride is off""")
 
-    def _change_max_min_Line(self, humancount):
+    def _change_max_min_line(self, humancount):
         """changes the variables self.maxLine and self.minLine to the respective max and min amounts of people inside"""
         if humancount > self.maxLine:
             self.maxLine = humancount
@@ -83,8 +82,7 @@ ride is off""")
                         self.running = False
                         self.in_action = 0
                         if self.line < self.capacity:
-                            self.in_loading = self.line
-                            self.loading = self.line
+                            self.in_load = self.line
                             self.line = 0
                             
                         else:
@@ -102,6 +100,6 @@ ride is off""")
         self.time = self.loadtime
 
     
-    def put_someone_in_line(self, count = 1):
+    def put_someone_in_line(self, count=1):
         """add people to the line (self.line)"""
         self.line += int(count)
