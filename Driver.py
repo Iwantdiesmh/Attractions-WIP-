@@ -1,5 +1,6 @@
 '''driver for the amusement park. Takes the values of each ride and steps through them everyone  'minute' in the program'''
 import time
+import random
 from Attributes import Attraction
 rides = []
 #1 sec = 1 minute
@@ -18,7 +19,7 @@ def create_the_ride(loadtime, duration, capacity, name):
 
 def run_the_ride(ride):
     '''puts a person in the ride and then steps'''
-    ride.put_someone_in_line(count=1)
+    ride.put_someone_in_line(random.randint(0,3))
     ride.step()
 
 def run_all_rides(spm=1):
@@ -28,13 +29,13 @@ def run_all_rides(spm=1):
         ride.stats()
     time.sleep(spm)
 
-def simulation(spm=1, minutes=6):
+def simulation(spm=1, minutes=10):
     '''runs the ride (broken)'''
     create_the_rides()
     for i in range(minutes):
         print()
         print("minutes =", i+1)
-        run_all_rides(spm)
+        run_all_rides(spm=1)
 
 if __name__ == "__main__":
         simulation()
