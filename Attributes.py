@@ -13,7 +13,7 @@ class Attraction():
         self.minLine = 1000
         self.maxCart = self.minCart = self.capacity
         self.name = name
-        self.time = 0
+        self.time = 1
         self.on = True
         self.loading = True
         self.running = False
@@ -29,17 +29,24 @@ class Attraction():
         print('least number of people in line:', self.minLine)
         if self.on == True:
             print("""---Status---
-                  The ride is on""")
+The ride is on""")
+            if self.loading == True:
+                print("""The ride is loading""")
+            else:
+                print("""The ride is running""")
         else:
             print("""---Status---
 ride is off""")
 
-    def _change_max_min_line(self, humancount): 
+    def _change_max_min_line(self): 
         """changes the variables self.maxLine and self.minLine to the respective max and min amounts of people inside"""
-        if humancount > self.maxLine:
-            self.maxLine = humancount
-        if humancount < self.minLine:
-            self.minLine = humancount
+        if self.line > self.maxLine:
+            self.maxLine = self.line 
+        if self.line  < self.minLine:
+            self.minLine = self.line 
+
+    def add_percentage():
+        pass
     
     def step(self): #i simplified the code by a lot
         """checks which mode the cart is in for the attration and decides wether to move it to the next one"""
@@ -62,6 +69,7 @@ ride is off""")
                    if self.line < self.capacity:
                        self.in_load = self.line
                        self.line = 0
+                       self._change_max_min_line()
                    elif self.line == 0:
                         pass
                         
@@ -78,12 +86,14 @@ ride is off""")
             self.in_action = 0
             self.in_load = 0
             self.line = 0
+            self. _change_max_min_line()
             self.action = self.loadtime
                       
     def put_someone_in_line(self, count=1):
         """add people to the line (self.line)"""
         if self.on == True:
             self.line += int(count)
+            self._change_max_min_line()
 
         else: #change some day
             print("Cant get in line; this ride is closed")
