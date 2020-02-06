@@ -1,5 +1,6 @@
 """module that sets up each ride and its attributes"""
 # pylint: disable=too-many-instance-attributes
+import random
 class Attraction():
     """main class for the attributes"""
     def __init__(self, loadtime, duration, capacity, name):
@@ -17,6 +18,8 @@ class Attraction():
         self.on = True
         self.loading = True
         self.running = False
+        self.percent = 0
+        
 
     def stats(self):
         """tells you each countable statistic"""
@@ -45,8 +48,80 @@ ride is off""")
         if self.line  < self.minLine:
             self.minLine = self.line 
 
-    def add_percentage():
-        pass
+    def add_percentage(self):
+        if self.on == True:
+            self.percent = random.randint(0, 100)
+            if self.line < 20: #avg person per step = 5
+                if self.percent >= 20 and self.line < 20:
+                    self.line += int(3)
+                elif self.percent > 20 and self.percent <= 40:
+                    self.line += int(4)
+                elif self.percent > 40 and self.percent <= 60:
+                    self.line += int(5)
+                elif self.percent > 60 and self.percent <= 80:
+                    self.line += int(6)
+                elif self.percent > 80 and self.percent <= 100:
+                    self.line += int(7)
+                    
+            elif self.line >= 20 and self.line < 40: #avg person per step = 3
+                if self.percent >= 20 and self.line < 20:
+                    self.line += int(1)
+                elif self.percent > 20 and self.percent <= 40:
+                    self.line += int(2)
+                elif self.percent > 40 and self.percent <= 60:
+                    self.line += int(3)
+                elif self.percent > 60 and self.percent <= 80:
+                    self.line += int(4)
+                elif self.percent > 80 and self.percent <= 100:
+                    self.line += int(5)
+
+            elif self.line >= 40 and self.line < 60: #avg person per step = 1
+                if self.percent >= 20 and self.line < 20:
+                    self.line += int(-1)
+                elif self.percent > 20 and self.percent <= 40:
+                    self.line += int(0)
+                elif self.percent > 40 and self.percent <= 60:
+                    self.line += int(1)
+                elif self.percent > 60 and self.percent <= 80:
+                    self.line += int(2)
+                elif self.percent > 80 and self.percent <= 100:
+                    self.line += int(3)
+
+            elif self.line >= 60 and self.line < 80: #avg person per step = 0
+                if self.percent >= 20 and self.line < 20:
+                    self.line += int(-2)
+                elif self.percent > 20 and self.percent <= 40:
+                    self.line += int(-1)
+                elif self.percent > 40 and self.percent <= 60:
+                    self.line += int(-0)
+                elif self.percent > 60 and self.percent <= 80:
+                    self.line += int(1)
+                elif self.percent > 80 and self.percent <= 100:
+                    self.line += int(2)
+
+            elif self.line >= 80 and self.line < 100: #avg person per step = -1
+                if self.percent >= 20 and self.line < 20:
+                    self.line += int(-3)
+                elif self.percent > 20 and self.percent <= 40:
+                    self.line += int(-2)
+                elif self.percent > 40 and self.percent <= 60:
+                    self.line += int(-1)
+                elif self.percent > 60 and self.percent <= 80:
+                    self.line += int(0)
+                elif self.percent > 80 and self.percent <= 100:
+                    self.line += int(1)
+
+            elif self.line >= 100: #avg person per step = -3
+                if self.percent >= 20 and self.line < 20:
+                    self.line += int(-5)
+                elif self.percent > 20 and self.percent <= 40:
+                    self.line += int(-4)
+                elif self.percent > 40 and self.percent <= 60:
+                    self.line += int(-3)
+                elif self.percent > 60 and self.percent <= 80:
+                    self.line += int(-2)
+                elif self.percent > 80 and self.percent <= 100:
+                    self.line += int(-1)
     
     def step(self): #i simplified the code by a lot
         """checks which mode the cart is in for the attration and decides wether to move it to the next one"""
@@ -89,11 +164,6 @@ ride is off""")
             self. _change_max_min_line()
             self.action = self.loadtime
                       
-    def put_someone_in_line(self, count=1):
+    def put_someone_in_line(self):
         """add people to the line (self.line)"""
-        if self.on == True:
-            self.line += int(count)
-            self._change_max_min_line()
-
-        else: #change some day
-            print("Cant get in line; this ride is closed")
+        self.add_percentage()
