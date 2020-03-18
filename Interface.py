@@ -47,11 +47,13 @@ def okButton5(): #fix
     print("this dont work")
     pass #crash the program?
 
+def menu_save():
+    pass
+
 root = Tk()
 root.title("Ride Page")
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
-#frame1.geometry('1080x720')
 
 #Frame 1---------------------------------------------------------------------------------------------------------
 frame1 = Frame(root)
@@ -116,11 +118,13 @@ ok_button5.pack(side=LEFT)
 #Menu-----------------------------------------------------------------------------------------------------------
 filemenu.add_command(label="Save",command=menu_save)
 filemenu.add_command(label="Save As",command=menu_save)
-filemenu.add_command(label="Import",command=menu_save
+filemenu.add_command(label="Import",command=menu_save)
 filemenu.add_command(label="Exit",command=menu_save)
 
 #----------------------------------------------------------------------------------------------------------------
+root.config(menu=menubar)
 root.validate=ALL
+
 vcmd=lambda: vi_int(int(string_entry_var1))
 vcmd=lambda: vi_int(int(string_entry_var2))
 vcmd=lambda: vi_int(int(string_entry_var3))
