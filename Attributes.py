@@ -20,7 +20,6 @@ class Attraction():
         self.running = False
         self.p = 0
         
-
     def stats(self):
         """tells you each countable statistic"""
         print()
@@ -250,3 +249,9 @@ ride is off""")
         """add people to the line (self.line)"""
         self.add_percentage()
         self._change_max_min_line()
+
+    def __str__(self):
+        
+
+
+        
