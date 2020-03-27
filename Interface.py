@@ -102,42 +102,20 @@ Label(frame1,text=" ").grid(row=10,column=0,sticky="N")
 #Frame 2--------------------------------------------------------------------------------------------------------
 frame2 = Frame(root) 
 frame2.grid(row=0,column=1)
-string_entry_var1 = StringVar()
-string_entry_var1.set(int(0))
-string_entry_value = Entry(frame2,textvariable=string_entry_var1,width=30)
-string_entry_value.grid(row=1,column=0,sticky=W)
-
-string_entry_var2 = StringVar()
-string_entry_var2.set(int(0))
-string_entry_value = Entry(frame2,textvariable=string_entry_var2,width=30)
-string_entry_value.grid(row=3,column=0,sticky=W)
-
-string_entry_var3 = StringVar()
-string_entry_var3.set(int(0))
-string_entry_value = Entry(frame2,textvariable=string_entry_var3,width=30)
-string_entry_value.grid(row=5,column=0,sticky=W)
-
-string_entry_var4 = StringVar()
-string_entry_var4.set(int(0))
-string_entry_value = Entry(frame2,textvariable=string_entry_var4,width=30)
-string_entry_value.grid(row=7,column=0,sticky=W)
-
-string_entry_var5 = StringVar()
-string_entry_var5.set(int(0))
-string_entry_value = Entry(frame2,textvariable=string_entry_var5,width=30)
-string_entry_value.grid(row=9,column=0,sticky=W)
-
-string_entry_var6 = StringVar()
-string_entry_var6.set(int(0))
-string_entry_value = Entry(frame2,textvariable=string_entry_var6,width=30)
-string_entry_value.grid(row=11,column=0,sticky=W)
+test = 13
 
 Label(frame2,text='Number Of People on the Ride').grid(row=0,column=0,sticky=W)
+Label(frame2,text=' ').grid(row=1,column=0,sticky=W)
 Label(frame2,text='People in Line').grid(row=2,column=0,sticky=W)
+Label(frame2,text=' ').grid(row=3,column=0,sticky=W)
 Label(frame2,text='State of Ride').grid(row=4, column=0,sticky=W)
+Label(frame2,text=' ').grid(row=5,column=0,sticky=W)
 Label(frame2,text='People Getting on the Ride').grid(row=6,column=0,sticky=W)
+Label(frame2,text=' ').grid(row=7,column=0,sticky=W)
 Label(frame2,text='People on the Ride').grid(row=8,column=0,sticky=W)
+Label(frame2,text=' ').grid(row=9,column=0,sticky=W)
 Label(frame2,text='Most People in Line').grid(row=10,column=0,sticky=W)
+Label(frame2,text=' ').grid(row=11,column=0,sticky=W)
 
 #Frame 3--------------------------------------------------------------------------------------------------------
 frame3 = Frame(root)
@@ -160,26 +138,26 @@ ok_button5.pack(side=LEFT)
 
 #Frame 5--------------------------------------------------------------------------------------------------------
 frame5 = Frame(root)
-frame5.grid(row=0,column=2)
+frame5.grid(row=0,column=1)
 
-string_entry_var7 = StringVar()
-string_entry_var7.set(int(0))
-string_entry_value = Entry(frame5,textvariable=string_entry_var7,width=30)
+string_entry_name = StringVar()
+string_entry_name.set('~~~')
+string_entry_value = Entry(frame5,textvariable=string_entry_name,width=30)
 string_entry_value.grid(row=1,column=0,sticky=W)
 
-string_entry_var8 = StringVar()
-string_entry_var8.set(int(0))
-string_entry_value = Entry(frame5,textvariable=string_entry_var8,width=30)
+string_entry_capacity = StringVar()
+string_entry_capacity.set(int(0))
+string_entry_value = Entry(frame5,textvariable=string_entry_capacity,width=30)
 string_entry_value.grid(row=3,column=0,sticky=W)
 
-string_entry_var9 = StringVar()
-string_entry_var9.set(int(0))
-string_entry_value = Entry(frame5,textvariable=string_entry_var9,width=30)
+string_entry_loadtime = StringVar()
+string_entry_loadtime.set(int(0))
+string_entry_value = Entry(frame5,textvariable=string_entry_loadtime,width=30)
 string_entry_value.grid(row=5,column=0,sticky=W)
 
-string_entry_var10 = StringVar()
-string_entry_var10.set(int(0))
-string_entry_value = Entry(frame5,textvariable=string_entry_var10,width=30)
+string_entry_duration = StringVar()
+string_entry_duration.set(int(0))
+string_entry_value = Entry(frame5,textvariable=string_entry_duration,width=30)
 string_entry_value.grid(row=7,column=0,sticky=W)
 
 Label(frame5,text='Name').grid(row=0,column=0,sticky=W)
@@ -191,13 +169,6 @@ Label(frame5,text=' ').grid(row=8,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=9,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=10,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=11,column=0,sticky=W)
-
-#Frame 6--------------------------------------------------------------------------------------------------------
-frame6 = Frame(root)
-frame6.grid(row=1,column=2)
-
-ok_button6 = Button(frame6,text="Clear",width=30,height=1,command=handle_ok_button6)
-ok_button6.pack(side=LEFT)
 
 #Menu-----------------------------------------------------------------------------------------------------------
 filemenu.add_command(label="Save",command=file_save)
@@ -218,14 +189,4 @@ menubar.add_cascade(label="Help",menu=helpmenu)
 root.config(menu=menubar)
 root.validate=ALL
 root.mainloop()
-
-vcmd=lambda: vi_int(int(string_entry_var1))
-vcmd=lambda: vi_int(int(string_entry_var2))
-vcmd=lambda: vi_int(int(string_entry_var3))
-vcmd=lambda: vi_int(int(string_entry_var4))
-vcmd=lambda: vi_int(int(string_entry_var5))
-vcmd=lambda: vi_int(int(string_entry_var6))
-vcmd=lambda: vi_int(int(string_entry_var7))
-vcmd=lambda: vi_int(int(string_entry_var8))
-vcmd=lambda: vi_int(int(string_entry_var9))
-vcmd=lambda: vi_int(int(string_entry_var10))
+frame2.tkraise()
