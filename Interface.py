@@ -87,8 +87,8 @@ helpmenu = Menu(menubar, tearoff=0)
 frame1 = Frame(root,highlightcolor="black", highlightthickness=1)
 frame1.grid(row=0,column=0)
 
-Label(frame1,text="Rides").grid(row=0,column=0,sticky=N) #copy and paste for lame use
-Label(frame1,text=" ").grid(row=1,column=0,sticky="N")
+Label(frame1,text="Rides").grid(row=0,column=0,sticky='NW') #copy and paste for lame use
+Label(frame1,text=" ").grid(row=1,column=0,sticky='N')
 Label(frame1,text=" ").grid(row=2,column=0,sticky="N")
 Label(frame1,text=" ").grid(row=3,column=0,sticky="N")
 Label(frame1,text=" ").grid(row=4,column=0,sticky="N")
@@ -100,11 +100,9 @@ Label(frame1,text=" ").grid(row=9,column=0,sticky="N")
 Label(frame1,text=" ").grid(row=10,column=0,sticky="N")
 
 #Frame 2--------------------------------------------------------------------------------------------------------
-frame2 = Frame(root) 
-frame2.grid(row=0,column=1)
-test = 13
-
-Label(frame2,text='Number Of People on the Ride').grid(row=0,column=0,sticky=W)
+frame2 = Frame(root)
+frame2.grid(row=0,column=1,sticky='W')
+Label(frame2,text='Number Of People on the Ride').grid(row=0,column=0,sticky='W')
 Label(frame2,text=' ').grid(row=1,column=0,sticky=W)
 Label(frame2,text='People in Line').grid(row=2,column=0,sticky=W)
 Label(frame2,text=' ').grid(row=3,column=0,sticky=W)
@@ -188,5 +186,5 @@ menubar.add_cascade(label="Help",menu=helpmenu)
 #----------------------------------------------------------------------------------------------------------------
 root.config(menu=menubar)
 root.validate=ALL
-root.mainloop()
 frame2.tkraise()
+root.mainloop()
