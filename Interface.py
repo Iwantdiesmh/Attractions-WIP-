@@ -1,5 +1,9 @@
 from tkinter import *
-        
+from Attributes import Attraction
+import Pmw
+
+selection = 0
+
 def vi_int(int_var):
     try:
         int(int_var.get())
@@ -7,47 +11,40 @@ def vi_int(int_var):
     except ValueError:
         return False
 
-def handle_ok_button1():
-    okButton1()
+def button_create():
+    ButtonCreate()
 
-def okButton1(): #fix
-    print("")
+def ButtonCreate():
     pass
 
-def handle_ok_button2():
-    okButton2()
+def button_edit():
+    ButtonEdit()
 
-def okButton2(): #fix
-    print("")
+def ButtonEdit():
     pass
 
-def handle_ok_button3():
-    okButton3()
+def button_delete():
+    ButtonDelete()
 
-def okButton3(): #fix
-    print("")
-    pass #crash the program?
-
-def handle_ok_button4():
-    okButton4()
-
-def okButton4(): #fix
-    print("")
-
+def ButtonDelete():
     pass
 
-def handle_ok_button5():
-    okButton5()
+def button_update():
+    ButtonUpdate()
 
-def okButton5(): #fix
-    print("")
+def ButtonUpdate():
+    pass
+
+def button_reset():
+    ButtonReset()
+
+def ButtonReset():
     pass
 
 def handle_ok_button6():
     okButton6()
 
-def okButton6(): #fix
-    print("")
+def okButton6():
     pass
 
 def file_save():
@@ -74,35 +71,85 @@ def control_stop():
 def help_about():
     pass
 
+def selectionCommand():
+    """Callback when an item is selected"""
+    sels = box.getcurselection()
+    selection = sels[0]
+    determineRide(selection)
+
+def determineRide(selection):
+    if selection == str('Rollercoaster'):
+        pass
+    elif selection == str('Rollercoaster 2'):
+        pass
+    elif selection == str('Carousel'):
+        pass
+    elif selection == str('Peter the Pan'):
+        pass
+    elif selection == str('Drop Tower'):
+        pass
+    elif selection == str('Bizza Hut'):
+        pass
+    elif selection == str('Gravity Swing'):
+        pass
+    elif selection == str('Buzz Light Second'):
+        pass
+    elif selection == str('Small Than Average Mermaid'):
+        pass
+    elif selection == str('Hot Dogs'):
+        pass
+              
+#displaying rides-------------------------------------------------------------------------------------------------
+rides = []
+
+def create_the_rides():
+    '''creates the ride (hardcoded currently) by calling create_the_ride and putting in the parameters'''
+    create_the_ride(loadtime=2,duration=5,capacity=12,name="Rollercoaster") #1
+    create_the_ride(loadtime=2,duration=5,capacity=25,name="Rollercoaster number 2") #2
+    create_the_ride(loadtime=1,duration=5,capacity=30,name="Carousel") #3
+    create_the_ride(loadtime=15,duration=10,capacity=60,name="Peter the Pan") #4
+    create_the_ride(loadtime=1,duration=2,capacity=10,name="Drop Tower") #5
+    create_the_ride(loadtime=1,duration=1,capacity=1,name="Bizza Hut") #6
+    create_the_ride(loadtime=3,duration=55,capacity=40,name="Gravity Swing(?)") #7
+    create_the_ride(loadtime=1,duration=3,capacity=4,name="Buzz Light Second") #8
+    create_the_ride(loadtime=5,duration=6,capacity=20,name="Smaller Than Average Mermaid") #9
+    create_the_ride(loadtime=1,duration=1,capacity=1,name="Hot Dogs") #10
+
+def create_the_ride(loadtime, duration, capacity, name):
+    '''checks if any of the values equal zero (because it wont work then) and adds it to the 'rides' list'''
+    if loadtime==0 or duration==0 or capacity==0: #need to check for name. Dont know to do it
+        raise Exception('no 0 values for input')
+
+    ride = Attraction(loadtime, duration, capacity, name)
+    rides.append(ride)
+
+#stuff------------------------------------------------------------------------------------------------------------
+create_the_rides()
 root = Tk()
 root.title("Ride Page")
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
 controlmenu = Menu(menubar, tearoff=0)
 helpmenu = Menu(menubar, tearoff=0)
-#scrollbar = Scrollbar(root)
-#scrollbar.pack(side=RIGHT, fill=Y)
 
 #Frame 1---------------------------------------------------------------------------------------------------------
 frame1 = Frame(root,highlightcolor="black", highlightthickness=1)
 frame1.grid(row=0,column=0)
 
-Label(frame1,text="Rides").grid(row=0,column=0,sticky='NW') #copy and paste for lame use
-Label(frame1,text=" ").grid(row=1,column=0,sticky='N')
-Label(frame1,text=" ").grid(row=2,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=3,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=4,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=5,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=6,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=7,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=8,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=9,column=0,sticky="N")
-Label(frame1,text=" ").grid(row=10,column=0,sticky="N")
+# Create the ScrolledListBox.
+
+selection = None
+box = Pmw.ScrolledListBox(frame1,items=rides,labelpos="nw",
+            label_text="Rides",listbox_height = 6,
+            selectioncommand=selectionCommand,usehullsize = 1,
+            hull_width = 200,hull_height = 250)
+
+box.pack(fill = "both", expand = 1, padx = 5, pady = 5)
 
 #Frame 2--------------------------------------------------------------------------------------------------------
 frame2 = Frame(root)
-frame2.grid(row=0,column=1,sticky='W')
-Label(frame2,text='Number Of People on the Ride').grid(row=0,column=0,sticky='W')
+frame2.grid(row=0,column=1,sticky='NSEW')
+Label(frame2,text='Number Of People on the Ride').grid(row=0,column=0,sticky=W)
 Label(frame2,text=' ').grid(row=1,column=0,sticky=W)
 Label(frame2,text='People in Line').grid(row=2,column=0,sticky=W)
 Label(frame2,text=' ').grid(row=3,column=0,sticky=W)
@@ -118,25 +165,25 @@ Label(frame2,text=' ').grid(row=11,column=0,sticky=W)
 #Frame 3--------------------------------------------------------------------------------------------------------
 frame3 = Frame(root)
 frame3.grid(row=1,column=0)
-ok_button1 = Button(frame3,text="Create",width=7,height=1,command=handle_ok_button1)
+ok_button1 = Button(frame3,text="Create",width=9,height=1,command=button_create)
 ok_button1.pack(side=LEFT)
-ok_button2 = Button(frame3,text="Edit",width=7,height=1,command=handle_ok_button2)
+ok_button2 = Button(frame3,text="Edit",width=9,height=1,command=button_edit)
 ok_button2.pack(side=LEFT)
-ok_button3 = Button(frame3,text="Delete",width=7,height=1,command=handle_ok_button3)
+ok_button3 = Button(frame3,text="Delete",width=9,height=1,command=button_delete)
 ok_button3.pack(side=LEFT)
 
 #Frame 4--------------------------------------------------------------------------------------------------------
 frame4 = Frame(root)
 frame4.grid(row=1,column=1)
 
-ok_button4 = Button(frame4,text="Update",width=13,height=1,command=handle_ok_button4)
+ok_button4 = Button(frame4,text="Update",width=13,height=1,command=button_update)
 ok_button4.pack(side=LEFT)
-ok_button5 = Button(frame4,text="Reset",width=13,height=1,command=handle_ok_button5)
+ok_button5 = Button(frame4,text="Reset",width=13,height=1,command=button_reset)
 ok_button5.pack(side=LEFT)
 
 #Frame 5--------------------------------------------------------------------------------------------------------
 frame5 = Frame(root)
-frame5.grid(row=0,column=1)
+frame5.grid(row=0,column=1,sticky='NSEW')
 
 string_entry_name = StringVar()
 string_entry_name.set('~~~')
