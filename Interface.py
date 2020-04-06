@@ -115,6 +115,7 @@ def create_the_rides():
     create_the_ride(loadtime=5,duration=6,capacity=20,name="Smaller Than Average Mermaid") #9
     create_the_ride(loadtime=1,duration=1,capacity=1,name="Hot Dogs") #10
 
+
 def create_the_ride(loadtime, duration, capacity, name):
     '''checks if any of the values equal zero (because it wont work then) and adds it to the 'rides' list'''
     if loadtime==0 or duration==0 or capacity==0: #need to check for name. Dont know to do it
@@ -137,7 +138,6 @@ frame1 = Frame(root,highlightcolor="black", highlightthickness=1)
 frame1.grid(row=0,column=0)
 
 # Create the ScrolledListBox.
-
 selection = None
 box = Pmw.ScrolledListBox(frame1,items=rides,labelpos="nw",
             label_text="Rides",listbox_height = 6,
