@@ -2,51 +2,45 @@ from tkinter import *
 from Attributes import Attraction
 import Pmw
 
-selection = 0
-
 def vi_int(int_var):
     try:
         int(int_var.get())
         return True
     except ValueError:
         return False
-
+    
+#Buttons[create]-------------------------------------------------------------------------------------------------
 def button_create():
-    ButtonCreate()
+    ride = Attraction(0,0,0,'~~~') #put something in the params
+    update_frame5(ride)
 
-def ButtonCreate():
-    pass
-
+#edit-------------------------------------------------------
 def button_edit():
-    ButtonEdit()
+    sels = box.getcurselection()
+    selection = sels[0]
+    ride = determineRide(selection)
+    update_frame5(ride)
 
-def ButtonEdit():
-    pass
+def update_frame5(ride):
+    string_entry_name.set(ride.name)
+    string_entry_capacity.set(ride.capacity)
+    string_entry_loadtime.set(ride.loadtime)
+    string_entry_duration.set(ride.duration)
+    frame5.tkraise()
 
+#delete----------------------------------------------------
 def button_delete():
-    ButtonDelete()
-
-def ButtonDelete():
     pass
 
+#update----------------------------------------------------
 def button_update():
-    ButtonUpdate()
-
-def ButtonUpdate():
     pass
 
+#reset------------------------------------------------------
 def button_reset():
-    ButtonReset()
-
-def ButtonReset():
     pass
 
-def handle_ok_button6():
-    okButton6()
-
-def okButton6():
-    pass
-
+#menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
     pass
 
@@ -59,6 +53,7 @@ def file_import():
 def file_exit():
     pass
 
+#control----------------------------------------------------
 def control_start():
     pass
 
@@ -68,37 +63,32 @@ def control_pause():
 def control_stop():
     pass
 
+#help-------------------------------------------------------
 def help_about():
     pass
 
+#finding rides----------------------------------------------------------------------------------------------------
 def selectionCommand():
     """Callback when an item is selected"""
     sels = box.getcurselection()
     selection = sels[0]
-    determineRide(selection)
-
+    ride = determineRide(selection)
+    print(ride.name)
+    #TODO: check for incomplete edit
+    frame2.tkraise()
+    int_entry_line.set(ride.line)
+    #int_entry_state.set(ride.state)
+    int_entry_in_load.set(ride.in_load)
+    int_entry_in_action.set(ride.in_action)
+    int_entry_max.set(ride.maxLine)
+    
 def determineRide(selection):
-    if selection == str('Rollercoaster'):
-        pass
-    elif selection == str('Rollercoaster 2'):
-        pass
-    elif selection == str('Carousel'):
-        pass
-    elif selection == str('Peter the Pan'):
-        pass
-    elif selection == str('Drop Tower'):
-        pass
-    elif selection == str('Bizza Hut'):
-        pass
-    elif selection == str('Gravity Swing'):
-        pass
-    elif selection == str('Buzz Light Second'):
-        pass
-    elif selection == str('Small Than Average Mermaid'):
-        pass
-    elif selection == str('Hot Dogs'):
-        pass
-              
+    for ride in rides:
+        if selection == ride.name:
+            return ride
+            
+    raise RuntimeError('%s not found' %selection)
+
 #displaying rides-------------------------------------------------------------------------------------------------
 rides = []
 
@@ -110,7 +100,7 @@ def create_the_rides():
     create_the_ride(loadtime=15,duration=10,capacity=60,name="Peter the Pan") #4
     create_the_ride(loadtime=1,duration=2,capacity=10,name="Drop Tower") #5
     create_the_ride(loadtime=1,duration=1,capacity=1,name="Bizza Hut") #6
-    create_the_ride(loadtime=3,duration=55,capacity=40,name="Gravity Swing(?)") #7
+    create_the_ride(loadtime=3,duration=55,capacity=40,name="Gravity Swing") #7
     create_the_ride(loadtime=1,duration=3,capacity=4,name="Buzz Light Second") #8
     create_the_ride(loadtime=5,duration=6,capacity=20,name="Smaller Than Average Mermaid") #9
     create_the_ride(loadtime=1,duration=1,capacity=1,name="Hot Dogs") #10
@@ -149,18 +139,26 @@ box.pack(fill = "both", expand = 1, padx = 5, pady = 5)
 #Frame 2--------------------------------------------------------------------------------------------------------
 frame2 = Frame(root)
 frame2.grid(row=0,column=1,sticky='NSEW')
-Label(frame2,text='Number Of People on the Ride').grid(row=0,column=0,sticky=W)
-Label(frame2,text=' ').grid(row=1,column=0,sticky=W)
-Label(frame2,text='People in Line').grid(row=2,column=0,sticky=W)
-Label(frame2,text=' ').grid(row=3,column=0,sticky=W)
-Label(frame2,text='State of Ride').grid(row=4, column=0,sticky=W)
-Label(frame2,text=' ').grid(row=5,column=0,sticky=W)
-Label(frame2,text='People Getting on the Ride').grid(row=6,column=0,sticky=W)
-Label(frame2,text=' ').grid(row=7,column=0,sticky=W)
-Label(frame2,text='People on the Ride').grid(row=8,column=0,sticky=W)
-Label(frame2,text=' ').grid(row=9,column=0,sticky=W)
-Label(frame2,text='Most People in Line').grid(row=10,column=0,sticky=W)
-Label(frame2,text=' ').grid(row=11,column=0,sticky=W)
+
+Label(frame2,text='People in Line').grid(row=0,column=0,sticky=W)
+int_entry_line = IntVar()
+Label(frame2,textvariable=int_entry_line).grid(row=1,column=0,sticky=W)
+
+Label(frame2,text='State of Ride').grid(row=2,column=0,sticky=W)
+int_entry_state = IntVar()
+Label(frame2,textvariable=int_entry_state).grid(row=3,column=0,sticky=W)
+
+Label(frame2,text='People Getting on the Ride').grid(row=4, column=0,sticky=W)
+int_entry_in_load = IntVar()
+Label(frame2,textvariable=int_entry_in_load).grid(row=5,column=0,sticky=W)
+
+Label(frame2,text='People on the Ride').grid(row=6,column=0,sticky=W)
+int_entry_in_action = IntVar()
+Label(frame2,textvariable=int_entry_in_action).grid(row=7,column=0,sticky=W)
+
+Label(frame2,text='Most People in Line').grid(row=8,column=0,sticky=W)
+int_entry_max = IntVar()
+Label(frame2,textvariable=int_entry_max).grid(row=9,column=0,sticky=W)
 
 #Frame 3--------------------------------------------------------------------------------------------------------
 frame3 = Frame(root)
@@ -186,22 +184,18 @@ frame5 = Frame(root)
 frame5.grid(row=0,column=1,sticky='NSEW')
 
 string_entry_name = StringVar()
-string_entry_name.set('~~~')
 string_entry_value = Entry(frame5,textvariable=string_entry_name,width=30)
 string_entry_value.grid(row=1,column=0,sticky=W)
 
 string_entry_capacity = StringVar()
-string_entry_capacity.set(int(0))
 string_entry_value = Entry(frame5,textvariable=string_entry_capacity,width=30)
 string_entry_value.grid(row=3,column=0,sticky=W)
 
 string_entry_loadtime = StringVar()
-string_entry_loadtime.set(int(0))
 string_entry_value = Entry(frame5,textvariable=string_entry_loadtime,width=30)
 string_entry_value.grid(row=5,column=0,sticky=W)
 
 string_entry_duration = StringVar()
-string_entry_duration.set(int(0))
 string_entry_value = Entry(frame5,textvariable=string_entry_duration,width=30)
 string_entry_value.grid(row=7,column=0,sticky=W)
 

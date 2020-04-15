@@ -251,7 +251,6 @@ ride is off""")
         self._change_max_min_line()
 
     def __str__(self):
-        
-
+        return str(self.name)
 
         
