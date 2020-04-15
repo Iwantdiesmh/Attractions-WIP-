@@ -145,7 +145,7 @@ int_entry_line = IntVar()
 Label(frame2,textvariable=int_entry_line).grid(row=1,column=0,sticky=W)
 
 Label(frame2,text='State of Ride').grid(row=2,column=0,sticky=W)
-int_entry_state = IntVar()
+int_entry_state = StringVar()
 Label(frame2,textvariable=int_entry_state).grid(row=3,column=0,sticky=W)
 
 Label(frame2,text='People Getting on the Ride').grid(row=4, column=0,sticky=W)
