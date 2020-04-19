@@ -1,6 +1,8 @@
 from tkinter import *
 from Attributes import Attraction
 import Pmw
+running = False
+passed = 0
 
 def vi_int(int_var):
     try:
@@ -55,17 +57,49 @@ def file_exit():
 
 #control----------------------------------------------------
 def control_start():
-    pass
+    global running
+    running = True
+    run_all_rides()
 
 def control_pause():
-    pass
+    global running
+    running = False
 
 def control_stop():
-    pass
+    global running
+    running = False
 
 #help-------------------------------------------------------
 def help_about():
     pass
+
+#find state--------------------------------------------------------------------------------------------------------
+def find_state(ride):
+    if ride.loading:
+        return str('Loading')
+
+    elif ride.running:
+        return str('Running')
+
+    else:
+        return str('Off')
+
+#running rides----------------------------------------------------------------------------------------------------
+def run_the_ride(ride):
+    ride.put_someone_in_line()
+    ride.step()
+
+#run_all_rides------------------------------------------------
+def run_all_rides():
+    '''calls run_the_ride for every value in the list then sleeps for a in-game minute'''
+    if not running:
+        return
+
+    for ride in rides:
+        run_the_ride(ride)
+        global passed
+        passed += 1
+    root.after(1000, run_all_rides)
 
 #finding rides----------------------------------------------------------------------------------------------------
 def selectionCommand():
@@ -77,16 +111,17 @@ def selectionCommand():
     #TODO: check for incomplete edit
     frame2.tkraise()
     int_entry_line.set(ride.line)
-    #int_entry_state.set(ride.state)
+    string_entry_state.set(find_state(ride))
     int_entry_in_load.set(ride.in_load)
     int_entry_in_action.set(ride.in_action)
     int_entry_max.set(ride.maxLine)
+    string_entry_status('Running = %s | Minutes Passed = %s' %(running, passed))
     
 def determineRide(selection):
     for ride in rides:
         if selection == ride.name:
             return ride
-            
+
     raise RuntimeError('%s not found' %selection)
 
 #displaying rides-------------------------------------------------------------------------------------------------
@@ -104,7 +139,6 @@ def create_the_rides():
     create_the_ride(loadtime=1,duration=3,capacity=4,name="Buzz Light Second") #8
     create_the_ride(loadtime=5,duration=6,capacity=20,name="Smaller Than Average Mermaid") #9
     create_the_ride(loadtime=1,duration=1,capacity=1,name="Hot Dogs") #10
-
 
 def create_the_ride(loadtime, duration, capacity, name):
     '''checks if any of the values equal zero (because it wont work then) and adds it to the 'rides' list'''
@@ -134,7 +168,7 @@ box = Pmw.ScrolledListBox(frame1,items=rides,labelpos="nw",
             selectioncommand=selectionCommand,usehullsize = 1,
             hull_width = 200,hull_height = 250)
 
-box.pack(fill = "both", expand = 1, padx = 5, pady = 5)
+box.pack(fill="both", expand=1, padx=5, pady=5)
 
 #Frame 2--------------------------------------------------------------------------------------------------------
 frame2 = Frame(root)
@@ -145,8 +179,8 @@ int_entry_line = IntVar()
 Label(frame2,textvariable=int_entry_line).grid(row=1,column=0,sticky=W)
 
 Label(frame2,text='State of Ride').grid(row=2,column=0,sticky=W)
-int_entry_state = StringVar()
-Label(frame2,textvariable=int_entry_state).grid(row=3,column=0,sticky=W)
+string_entry_state = StringVar()
+Label(frame2,textvariable=string_entry_state).grid(row=3,column=0,sticky=W)
 
 Label(frame2,text='People Getting on the Ride').grid(row=4, column=0,sticky=W)
 int_entry_in_load = IntVar()
@@ -162,7 +196,7 @@ Label(frame2,textvariable=int_entry_max).grid(row=9,column=0,sticky=W)
 
 #Frame 3--------------------------------------------------------------------------------------------------------
 frame3 = Frame(root)
-frame3.grid(row=1,column=0)
+frame3.grid(row=2,column=0)
 ok_button1 = Button(frame3,text="Create",width=9,height=1,command=button_create)
 ok_button1.pack(side=LEFT)
 ok_button2 = Button(frame3,text="Edit",width=9,height=1,command=button_edit)
@@ -172,7 +206,7 @@ ok_button3.pack(side=LEFT)
 
 #Frame 4--------------------------------------------------------------------------------------------------------
 frame4 = Frame(root)
-frame4.grid(row=1,column=1)
+frame4.grid(row=2,column=1)
 
 ok_button4 = Button(frame4,text="Update",width=13,height=1,command=button_update)
 ok_button4.pack(side=LEFT)
@@ -208,6 +242,13 @@ Label(frame5,text=' ').grid(row=8,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=9,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=10,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=11,column=0,sticky=W)
+
+#Frame Middle-----------------------------------------------------------------------------------------------------------
+frame_middle = Frame(root)
+frame_middle.grid(row=1,column=0,sticky='NSEW')
+
+string_entry_status = StringVar()
+Label(frame_middle,textvariable=string_entry_status).grid(row=0,column=0,sticky=W)
 
 #Menu-----------------------------------------------------------------------------------------------------------
 filemenu.add_command(label="Save",command=file_save)

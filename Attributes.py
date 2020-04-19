@@ -31,7 +31,7 @@ class Attraction():
         print('least number of people in line:', self.minLine)
         if self.on == True:
             print("""---Status---
-The ride is on""")
+ The ride is on""")
             if self.loading == True:
                 print("""The ride is loading""")
             else:
