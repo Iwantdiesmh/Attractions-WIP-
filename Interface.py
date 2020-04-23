@@ -3,6 +3,8 @@ from Attributes import Attraction
 import Pmw
 running = False
 passed = 0
+globalride = None
+updated = False
 
 def vi_int(int_var):
     try:
@@ -13,34 +15,47 @@ def vi_int(int_var):
     
 #Buttons[create]-------------------------------------------------------------------------------------------------
 def button_create():
-    ride = Attraction(0,0,0,'~~~') #put something in the params
-    update_frame5(ride)
+    global globalride
+    globalride = Attraction(0,0,0,'~~~') #put something in the params
+    update_frame5(globalride)
 
 #edit-------------------------------------------------------
 def button_edit():
     sels = box.getcurselection()
-    selection = sels[0]
-    ride = determineRide(selection)
-    update_frame5(ride)
+    if len(sels) == 0:
+        #add message box
+         dialog = Pmw.MessageDialog(title="Err 404",buttons=("Ok",),message_text="Please select a ride")
+
+    else:
+        selection = sels[0]
+        ride = determineRide(selection)
+        update_frame5(ride)
 
 def update_frame5(ride):
-    string_entry_name.set(ride.name)
-    string_entry_capacity.set(ride.capacity)
-    string_entry_loadtime.set(ride.loadtime)
-    string_entry_duration.set(ride.duration)
+    global globalride
+    globalride = ride
+    string_entry_name.set(str(ride.name))
+    string_entry_capacity.set(int(ride.capacity))
+    string_entry_loadtime.set(int(ride.loadtime))
+    string_entry_duration.set(int(ride.duration))
     frame5.tkraise()
-
+    
 #delete----------------------------------------------------
 def button_delete():
     pass
 
 #update----------------------------------------------------
 def button_update():
-    pass
-
+    global updated
+    globalride.name = str(string_entry_name.get())
+    globalride.capacity = int(string_entry_capacity.get())
+    globalride.loadtime = int(string_entry_loadtime.get())
+    globalride.duration = int(string_entry_duration.get())
+    updated = True
+    
 #reset------------------------------------------------------
 def button_reset():
-    pass
+    update_frame5(globalride)
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
@@ -84,6 +99,18 @@ def find_state(ride):
     else:
         return str('Off')
 
+#update----------------------------------------------------------------------------------------------------------
+def update_message():
+    message = str('Running = %s | Minutes Passed = %s' %(running, passed))
+    string_entry_status.set(message)
+
+def update_statistics(ride):
+    int_entry_line.set(ride.line)
+    string_entry_state.set(find_state(ride))
+    int_entry_in_load.set(ride.in_load)
+    int_entry_in_action.set(ride.in_action)
+    int_entry_max.set(ride.maxLine)
+
 #running rides----------------------------------------------------------------------------------------------------
 def run_the_ride(ride):
     ride.put_someone_in_line()
@@ -92,13 +119,16 @@ def run_the_ride(ride):
 #run_all_rides------------------------------------------------
 def run_all_rides():
     '''calls run_the_ride for every value in the list then sleeps for a in-game minute'''
+    global passed
     if not running:
+        update_message()
         return
 
     for ride in rides:
         run_the_ride(ride)
-        global passed
-        passed += 1
+        update_message()
+
+    passed += 1
     root.after(1000, run_all_rides)
 
 #finding rides----------------------------------------------------------------------------------------------------
@@ -107,15 +137,8 @@ def selectionCommand():
     sels = box.getcurselection()
     selection = sels[0]
     ride = determineRide(selection)
-    print(ride.name)
-    #TODO: check for incomplete edit
     frame2.tkraise()
-    int_entry_line.set(ride.line)
-    string_entry_state.set(find_state(ride))
-    int_entry_in_load.set(ride.in_load)
-    int_entry_in_action.set(ride.in_action)
-    int_entry_max.set(ride.maxLine)
-    string_entry_status('Running = %s | Minutes Passed = %s' %(running, passed))
+    update_statistics(ride)
     
 def determineRide(selection):
     for ride in rides:
@@ -123,6 +146,7 @@ def determineRide(selection):
             return ride
 
     raise RuntimeError('%s not found' %selection)
+
 
 #displaying rides-------------------------------------------------------------------------------------------------
 rides = []
