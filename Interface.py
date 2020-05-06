@@ -5,6 +5,7 @@ running = False
 passed = 0
 globalride = None
 updated = False
+new = False
 
 def vi_int(int_var):
     try:
@@ -15,21 +16,35 @@ def vi_int(int_var):
     
 #Buttons[create]-------------------------------------------------------------------------------------------------
 def button_create():
+    global new
+    new = True
+    
     global globalride
-    globalride = Attraction(0,0,0,'~~~') #put something in the params
-    update_frame5(globalride)
+    if running == False:
+        globalride = Attraction(0,0,0,'~~~') #put something in the params
+        update_frame5(globalride)
+        
+    else:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
 
 #edit-------------------------------------------------------
 def button_edit():
-    sels = box.getcurselection()
-    if len(sels) == 0:
-        #add message box
-         dialog = Pmw.MessageDialog(title="Err 404",buttons=("Ok",),message_text="Please select a ride")
+    global new
+    new = False
+    
+    global running
+    if running == False:
+        sels = box.getcurselection()
+        if len(sels) == 0:
+             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please select a ride")
+
+        else:
+            selection = sels[0]
+            ride = determineRide(selection)
+            update_frame5(ride)
 
     else:
-        selection = sels[0]
-        ride = determineRide(selection)
-        update_frame5(ride)
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
 
 def update_frame5(ride):
     global globalride
@@ -42,17 +57,35 @@ def update_frame5(ride):
     
 #delete----------------------------------------------------
 def button_delete():
-    pass
+    global running
+    if running == False:
+        sels = box.getcurselection()
+        if len(sels) == 0:
+             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please select a ride")
+
+        else:
+            selection = sels[0]
+            for (i, ride) in enumerate(rides):
+                pass #for the ride that matches global ride, delete that ride
+                
+    else:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
 
 #update----------------------------------------------------
 def button_update():
     global updated
+    global new
     globalride.name = str(string_entry_name.get())
     globalride.capacity = int(string_entry_capacity.get())
     globalride.loadtime = int(string_entry_loadtime.get())
     globalride.duration = int(string_entry_duration.get())
     updated = True
-    
+    if new == True:
+        rides.append(globalride)
+        new = False
+
+    update_rides()
+
 #reset------------------------------------------------------
 def button_reset():
     update_frame5(globalride)
@@ -68,7 +101,7 @@ def file_import():
     pass
 
 def file_exit():
-    pass
+    root.destroy()
 
 #control----------------------------------------------------
 def control_start():
@@ -86,7 +119,13 @@ def control_stop():
 
 #help-------------------------------------------------------
 def help_about():
-    pass
+    dialog = Pmw.MessageDialog(title="About Page",buttons=("Close",),message_text='''By: Angus Chen
+A professional coder who understands about as much as
+the random kid on the block
+
+Amusement Park is simple code made to simulate an actual
+park in basically no areas whatsoever
+''')
 
 #find state--------------------------------------------------------------------------------------------------------
 def find_state(ride):
@@ -111,6 +150,10 @@ def update_statistics(ride):
     int_entry_in_action.set(ride.in_action)
     int_entry_max.set(ride.maxLine)
 
+def auto_update():
+    while True:
+        update_statistics(globalride)
+    
 #running rides----------------------------------------------------------------------------------------------------
 def run_the_ride(ride):
     ride.put_someone_in_line()
@@ -127,6 +170,7 @@ def run_all_rides():
     for ride in rides:
         run_the_ride(ride)
         update_message()
+        
 
     passed += 1
     root.after(1000, run_all_rides)
@@ -139,7 +183,7 @@ def selectionCommand():
     ride = determineRide(selection)
     frame2.tkraise()
     update_statistics(ride)
-    
+
 def determineRide(selection):
     for ride in rides:
         if selection == ride.name:
@@ -147,6 +191,9 @@ def determineRide(selection):
 
     raise RuntimeError('%s not found' %selection)
 
+#finding rides----------------------------------------------------------------------------------------------------
+def update_rides():
+    box.setlist(rides)
 
 #displaying rides-------------------------------------------------------------------------------------------------
 rides = []
@@ -175,7 +222,7 @@ def create_the_ride(loadtime, duration, capacity, name):
 #stuff------------------------------------------------------------------------------------------------------------
 create_the_rides()
 root = Tk()
-root.title("Ride Page")
+root.title("Amusement Park-ish")
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
 controlmenu = Menu(menubar, tearoff=0)
