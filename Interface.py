@@ -6,6 +6,7 @@ passed = 0
 globalride = None
 updated = False
 new = False
+bypass = True
 
 def vi_int(int_var):
     try:
@@ -17,7 +18,9 @@ def vi_int(int_var):
 #Buttons[create]-------------------------------------------------------------------------------------------------
 def button_create():
     global new
+    global bypass
     new = True
+    bypass = False
     
     global globalride
     if running == False:
@@ -30,7 +33,9 @@ def button_create():
 #edit-------------------------------------------------------
 def button_edit():
     global new
+    global bypass
     new = False
+    bypass = False
     
     global running
     if running == False:
@@ -75,6 +80,8 @@ def button_delete():
 def button_update():
     global updated
     global new
+    global bypass
+    
     globalride.name = str(string_entry_name.get())
     globalride.capacity = int(string_entry_capacity.get())
     globalride.loadtime = int(string_entry_loadtime.get())
@@ -85,10 +92,13 @@ def button_update():
         new = False
 
     update_rides()
+    bypass = True
 
 #reset------------------------------------------------------
 def button_reset():
+    global bypass
     update_frame5(globalride)
+    bypass = True
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
@@ -175,14 +185,33 @@ def run_all_rides():
     passed += 1
     root.after(1000, run_all_rides)
 
+#yes/no/cancel----------------------------------------------------------------------------------------------------
+def check_before_continuing():
+    if bypass:
+        return True
+
+    answer = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
+        message_text="Do you want to save the updated data before continuing?")
+
+    if answer == "Yes":
+        button_update()
+        return True
+
+    if answer == "No":
+        return True
+
+    if answer == "Cancel":
+        return False
+
 #finding rides----------------------------------------------------------------------------------------------------
 def selectionCommand():
     """Callback when an item is selected"""
-    sels = box.getcurselection()
-    selection = sels[0]
-    ride = determineRide(selection)
-    frame2.tkraise()
-    update_statistics(ride)
+    if check_before_continuing() == True:
+        sels = box.getcurselection()
+        selection = sels[0]
+        ride = determineRide(selection)
+        frame2.tkraise()
+        update_statistics(ride)
 
 def determineRide(selection):
     for ride in rides:
