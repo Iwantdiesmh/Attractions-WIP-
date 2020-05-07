@@ -18,7 +18,7 @@ def vi_int(int_var):
 #Buttons[create]-------------------------------------------------------------------------------------------------
 def button_create():
     global new
-    global bypass
+    global baypass
     new = True
     bypass = False
     
