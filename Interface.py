@@ -70,8 +70,11 @@ def button_delete():
 
         else:
             selection = sels[0]
+            selected_ride = determineRide(selection)
             for (i, ride) in enumerate(rides):
-                pass #for the ride that matches global ride, delete that ride
+                if selected_ride == ride:
+                    del rides[i]
+                pass #for the ride that matches selected_ride, delete that ride
                 
     else:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
@@ -190,12 +193,15 @@ def check_before_continuing():
     if bypass:
         return True
 
-    answer = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
-        message_text="Do you want to save the updated data before continuing?")
+    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
+        message_text="Do you want to save the updated data before continuing?",command=process_options)
 
+    dialog.withdraw()
+
+def process_options(answer):
     if answer == "Yes":
         button_update()
-        return True
+        return True #put in global variable instead
 
     if answer == "No":
         return True
