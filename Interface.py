@@ -6,7 +6,7 @@ passed = 0
 globalride = None
 updated = False
 new = False
-bypass = True
+ok_to_switch = True
 
 def vi_int(int_var):
     try:
@@ -20,7 +20,7 @@ def button_create():
     global new
     global baypass
     new = True
-    bypass = False
+    ok_to_switch = False
     
     global globalride
     if running == False:
@@ -33,9 +33,9 @@ def button_create():
 #edit-------------------------------------------------------
 def button_edit():
     global new
-    global bypass
+    global ok_to_switch
     new = False
-    bypass = False
+    ok_to_switch = False
     
     global running
     if running == False:
@@ -71,11 +71,17 @@ def button_delete():
         else:
             selection = sels[0]
             selected_ride = determineRide(selection)
-            for (i, ride) in enumerate(rides):
-                if selected_ride == ride:
-                    del rides[i]
-                pass #for the ride that matches selected_ride, delete that ride
-                
+            print(ok_to_switch, selected_ride, globalride)
+            if ok_to_switch == False and selected_ride == globalride:
+                dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Deleting without saving update")
+
+            else:
+                for (i, ride) in enumerate(rides):
+                    if selected_ride == ride:
+                        del rides[i]
+                        update_rides()
+                        break
+                    
     else:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
 
@@ -83,7 +89,7 @@ def button_delete():
 def button_update():
     global updated
     global new
-    global bypass
+    global ok_to_switch
     
     globalride.name = str(string_entry_name.get())
     globalride.capacity = int(string_entry_capacity.get())
@@ -95,13 +101,13 @@ def button_update():
         new = False
 
     update_rides()
-    bypass = True
+    ok_to_switch = True
 
 #reset------------------------------------------------------
 def button_reset():
-    global bypass
+    global ok_to_switch
     update_frame5(globalride)
-    bypass = True
+    ok_to_switch = True
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
@@ -110,7 +116,7 @@ def file_save():
 def file_saveas():
     pass
 
-def file_import():
+def file_load():
     pass
 
 def file_exit():
@@ -121,10 +127,6 @@ def control_start():
     global running
     running = True
     run_all_rides()
-
-def control_pause():
-    global running
-    running = False
 
 def control_stop():
     global running
@@ -190,15 +192,14 @@ def run_all_rides():
 
 #yes/no/cancel----------------------------------------------------------------------------------------------------
 def check_before_continuing():
-    if bypass:
+    if ok_to_switch:
         return True
 
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
-        message_text="Do you want to save the updated data before continuing?",command=process_options)
+        message_text="Do you want to save the updated data before continuing?")
 
-    dialog.withdraw()
+    answer = dialog.activate()
 
-def process_options(answer):
     if answer == "Yes":
         button_update()
         return True #put in global variable instead
@@ -214,10 +215,11 @@ def selectionCommand():
     """Callback when an item is selected"""
     if check_before_continuing() == True:
         sels = box.getcurselection()
-        selection = sels[0]
-        ride = determineRide(selection)
-        frame2.tkraise()
-        update_statistics(ride)
+        if len(sels) == 1:
+            selection = sels[0]
+            ride = determineRide(selection)
+            frame2.tkraise()
+            update_statistics(ride)
 
 def determineRide(selection):
     for ride in rides:
@@ -357,14 +359,13 @@ string_entry_status = StringVar()
 Label(frame_middle,textvariable=string_entry_status).grid(row=0,column=0,sticky=W)
 
 #Menu-----------------------------------------------------------------------------------------------------------
+filemenu.add_command(label="Open...",command=file_load)
 filemenu.add_command(label="Save",command=file_save)
 filemenu.add_command(label="Save As...",command=file_saveas)
-filemenu.add_command(label="Import",command=file_import)
 filemenu.add_command(label="Exit",command=file_exit)
 menubar.add_cascade(label="File",menu=filemenu)
 
 controlmenu.add_command(label="Start",command=control_start)
-controlmenu.add_command(label="Pause",command=control_pause)
 controlmenu.add_command(label="Stop",command=control_stop)
 menubar.add_cascade(label="Control",menu=controlmenu)
 
