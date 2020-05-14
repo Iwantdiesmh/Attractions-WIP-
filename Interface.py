@@ -164,11 +164,8 @@ def update_statistics(ride):
     int_entry_in_load.set(ride.in_load)
     int_entry_in_action.set(ride.in_action)
     int_entry_max.set(ride.maxLine)
-
-def auto_update():
-    while True:
-        update_statistics(globalride)
-    
+    #root.after(1000, update_statistics)
+        
 #running rides----------------------------------------------------------------------------------------------------
 def run_the_ride(ride):
     ride.put_someone_in_line()
