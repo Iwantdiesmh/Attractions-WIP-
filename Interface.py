@@ -7,6 +7,7 @@ globalride = None
 updated = False
 new = False
 ok_to_switch = True
+update_stats_ride = None
 
 def vi_int(int_var):
     try:
@@ -159,12 +160,17 @@ def update_message():
     string_entry_status.set(message)
 
 def update_statistics(ride):
+    global update_stats_ride
+    update_stats_ride = ride
     int_entry_line.set(ride.line)
     string_entry_state.set(find_state(ride))
     int_entry_in_load.set(ride.in_load)
     int_entry_in_action.set(ride.in_action)
     int_entry_max.set(ride.maxLine)
-    #root.after(1000, update_statistics)
+    root.after(1000, auto_update)
+
+def auto_update():
+    update_statistics(update_stats_ride)
         
 #running rides----------------------------------------------------------------------------------------------------
 def run_the_ride(ride):
