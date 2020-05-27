@@ -1,6 +1,8 @@
 from tkinter import *
+from tkinter import filedialog
 from Attributes import Attraction
 import Pmw
+import pickle
 running = False
 passed = 0
 globalride = None
@@ -15,7 +17,7 @@ def vi_int(int_var):
         return True
     except ValueError:
         return False
-    
+
 #Buttons[create]-------------------------------------------------------------------------------------------------
 def button_create():
     global new
@@ -27,7 +29,7 @@ def button_create():
     if running == False:
         globalride = Attraction(0,0,0,'~~~') #put something in the params
         update_frame5(globalride)
-        
+
     else:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
 
@@ -115,10 +117,14 @@ def file_save():
     pass
 
 def file_saveas():
-    pass
+    pickle.dump(rides, open("save.pickle", "wb" ) )
+    print(rides)
 
 def file_load():
-    pass
+    filename = filedialog.askopenfilename(
+            initialdir ="/",
+            title = "h.",
+            filetypes = (("rides","*.pickle"),("all files","*.*")))
 
 def file_exit():
     root.destroy()
@@ -195,6 +201,7 @@ def run_all_rides():
 
 #yes/no/cancel----------------------------------------------------------------------------------------------------
 def check_before_continuing():
+    global ok_to_switch
     if ok_to_switch:
         return True
 
@@ -205,9 +212,11 @@ def check_before_continuing():
 
     if answer == "Yes":
         button_update()
-        return True #put in global variable instead
+        ok_to_switch = True
+        return True
 
     if answer == "No":
+        ok_to_switch = True
         return True
 
     if answer == "Cancel":
