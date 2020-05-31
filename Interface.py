@@ -10,6 +10,7 @@ updated = False
 new = False
 ok_to_switch = True
 update_stats_ride = None
+importfile = None
 
 def vi_int(int_var):
     try:
@@ -18,7 +19,11 @@ def vi_int(int_var):
     except ValueError:
         return False
 
-#Buttons[create]-------------------------------------------------------------------------------------------------
+#Turn off the #@($*#)$#@ rides please---------------------------------------------------------------------
+def turn_off_rides():
+    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
+    
+#Buttons[create]------------------------------------------------------------------------------------------------
 def button_create():
     global new
     global baypass
@@ -31,14 +36,13 @@ def button_create():
         update_frame5(globalride)
 
     else:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
+        turn_off_rides()
 
 #edit-------------------------------------------------------
 def button_edit():
     global new
     global ok_to_switch
     new = False
-    ok_to_switch = False
     
     global running
     if running == False:
@@ -50,9 +54,10 @@ def button_edit():
             selection = sels[0]
             ride = determineRide(selection)
             update_frame5(ride)
+            ok_to_switch = False
 
     else:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
+        turn_off_rides()
 
 def update_frame5(ride):
     global globalride
@@ -86,7 +91,7 @@ def button_delete():
                         break
                     
     else:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
+        turn_off_rides()
 
 #update----------------------------------------------------
 def button_update():
@@ -114,20 +119,66 @@ def button_reset():
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
-    pass
+    if running:
+        turn_off_rides()
+
+    else:    
+        if not importfile:
+            file_saveas()
+            return
+        
+        pickle.dump(rides, open(importfile, "wb" ))
+    
 
 def file_saveas():
-    pickle.dump(rides, open("save.pickle", "wb" ) )
-    print(rides)
+    if running:
+        turn_off_rides()
+
+    else:
+        filename = filedialog.asksaveasfilename(
+                initialdir ="/",
+                title = "h.",
+                filetypes = (("rides","*.pickle"),("all files","*.*")))
+
+        if filename == "":
+            return
+
+        if "." not in filename:
+            filename += ".pickle"
+
+        with open(filename, "wb") as picklefile:
+            pickle.dump(rides, picklefile)
+            pickle.dump(passed, picklefile)
+
+        global importfile
+        importfile = filename
 
 def file_load():
+    global rides
+    global passed
+    global importfile
+    
     filename = filedialog.askopenfilename(
             initialdir ="/",
             title = "h.",
             filetypes = (("rides","*.pickle"),("all files","*.*")))
 
+    if filename == "":
+        return
+
+    with open(filename, "rb") as picklefile:
+        rides = pickle.load(picklefile)
+        passed = pickle.load(picklefile)
+        print(passed)
+
+    importfile = filename
+    
 def file_exit():
-    root.destroy()
+    if not ok_to_switch:
+        turn_off_rides()
+
+    else:
+        root.destroy()
 
 #control----------------------------------------------------
 def control_start():
@@ -194,7 +245,6 @@ def run_all_rides():
     for ride in rides:
         run_the_ride(ride)
         update_message()
-        
 
     passed += 1
     root.after(1000, run_all_rides)
@@ -202,7 +252,7 @@ def run_all_rides():
 #yes/no/cancel----------------------------------------------------------------------------------------------------
 def check_before_continuing():
     global ok_to_switch
-    if ok_to_switch:
+    if ok_to_switch or verify_same_string_entry():
         return True
 
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
@@ -222,10 +272,19 @@ def check_before_continuing():
     if answer == "Cancel":
         return False
 
+def verify_same_string_entry():
+    if string_entry_name.get() == globalride.name and string_entry_capacity.get() == globalride.capacity and string_entry_loadtime.get() == globalride.loadtime:
+        print("true")
+        return True
+
+    else:
+        print("false")
+        return False
+
 #finding rides----------------------------------------------------------------------------------------------------
 def selectionCommand():
     """Callback when an item is selected"""
-    if check_before_continuing() == True:
+    if check_before_continuing():
         sels = box.getcurselection()
         if len(sels) == 1:
             selection = sels[0]
