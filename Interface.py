@@ -198,7 +198,11 @@ def file_load():
     
 def file_exit():
     if verify_same_string_entry():
-        root.destroy
+        root.destroy()
+
+    else:
+        #add dailog box please thanks
+        return
 
 #control----------------------------------------------------
 def control_start():
