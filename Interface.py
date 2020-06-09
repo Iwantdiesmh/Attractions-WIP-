@@ -11,6 +11,7 @@ new = False
 ok_to_switch = True
 update_stats_ride = None
 importfile = None
+save_changes = False #true whenever you successfully changed the data
 
 def vi_int(int_var):
     try:
@@ -29,10 +30,10 @@ def button_create():
     global baypass
     new = True
     ok_to_switch = False
-    
+
     global globalride
     if running == False:
-        globalride = Attraction(0,0,0,'~~~') #put something in the params
+        globalride = Attraction(1,1,1,'~~~') #put something in the params
         update_frame5(globalride)
 
     else:
@@ -98,11 +99,33 @@ def button_update():
     global updated
     global new
     global ok_to_switch
-    
-    globalride.name = str(string_entry_name.get())
-    globalride.capacity = int(string_entry_capacity.get())
-    globalride.loadtime = int(string_entry_loadtime.get())
-    globalride.duration = int(string_entry_duration.get())
+
+    try:
+        globalride.name = str(string_entry_name.get())
+        globalride.capacity = int(string_entry_capacity.get())
+        globalride.loadtime = int(string_entry_loadtime.get())
+        globalride.duration = int(string_entry_duration.get())
+
+    except TclError as error:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+        message_text=str(error))
+        return
+
+    if int(string_entry_capacity.get()) <= 0:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+        message_text="don't put in a zero or negative number")
+        return
+
+    if int(string_entry_loadtime.get()) <= 0:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+        message_text="don't put in a zero or negative number")
+        return
+
+    if int(string_entry_duration.get()) <= 0:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+        message_text="don't put in a zero or negative number")
+        return
+
     updated = True
     if new == True:
         rides.append(globalride)
@@ -174,11 +197,8 @@ def file_load():
     importfile = filename
     
 def file_exit():
-    if not ok_to_switch:
-        turn_off_rides()
-
-    else:
-        root.destroy()
+    if verify_same_string_entry():
+        root.destroy
 
 #control----------------------------------------------------
 def control_start():
@@ -228,7 +248,7 @@ def update_statistics(ride):
 
 def auto_update():
     update_statistics(update_stats_ride)
-        
+    
 #running rides----------------------------------------------------------------------------------------------------
 def run_the_ride(ride):
     ride.put_someone_in_line()
@@ -273,13 +293,18 @@ def check_before_continuing():
         return False
 
 def verify_same_string_entry():
-    if string_entry_name.get() == globalride.name and string_entry_capacity.get() == globalride.capacity and string_entry_loadtime.get() == globalride.loadtime:
-        print("true")
-        return True
+    if string_entry_name.get() == globalride.name:
+        try:
+            if string_entry_capacity.get() == globalride.capacity:
+                if string_entry_loadtime.get() == globalride.loadtime:
+                    if string_entry_duration.get() == globalride.duration:
+                        return True
+                    
+        except TclError as error:
+            dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                message_text=str(error))
 
-    else:
-        print("false")
-        return False
+    return False
 
 #finding rides----------------------------------------------------------------------------------------------------
 def selectionCommand():
@@ -400,15 +425,15 @@ string_entry_name = StringVar()
 string_entry_value = Entry(frame5,textvariable=string_entry_name,width=30)
 string_entry_value.grid(row=1,column=0,sticky=W)
 
-string_entry_capacity = StringVar()
+string_entry_capacity = IntVar()
 string_entry_value = Entry(frame5,textvariable=string_entry_capacity,width=30)
 string_entry_value.grid(row=3,column=0,sticky=W)
 
-string_entry_loadtime = StringVar()
+string_entry_loadtime = IntVar()
 string_entry_value = Entry(frame5,textvariable=string_entry_loadtime,width=30)
 string_entry_value.grid(row=5,column=0,sticky=W)
 
-string_entry_duration = StringVar()
+string_entry_duration = IntVar()
 string_entry_value = Entry(frame5,textvariable=string_entry_duration,width=30)
 string_entry_value.grid(row=7,column=0,sticky=W)
 
