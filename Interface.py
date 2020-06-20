@@ -11,7 +11,7 @@ new = False
 ok_to_switch = True
 update_stats_ride = None
 importfile = None
-save_changes = False #true whenever you successfully changed the data
+save_changes = True #true whenever you successfully changed the data
 
 def vi_int(int_var):
     try:
@@ -30,6 +30,7 @@ def button_create():
     global baypass
     new = True
     ok_to_switch = False
+    save_changes = False
 
     global globalride
     if running == False:
@@ -44,6 +45,7 @@ def button_edit():
     global new
     global ok_to_switch
     new = False
+    save_changes = False
     
     global running
     if running == False:
@@ -68,10 +70,11 @@ def update_frame5(ride):
     string_entry_loadtime.set(int(ride.loadtime))
     string_entry_duration.set(int(ride.duration))
     frame5.tkraise()
-    
+
 #delete----------------------------------------------------
 def button_delete():
     global running
+    save_changes = False
     if running == False:
         sels = box.getcurselection()
         if len(sels) == 0:
@@ -90,7 +93,7 @@ def button_delete():
                         del rides[i]
                         update_rides()
                         break
-                    
+
     else:
         turn_off_rides()
 
@@ -99,6 +102,7 @@ def button_update():
     global updated
     global new
     global ok_to_switch
+    save_changes = True
 
     try:
         globalride.name = str(string_entry_name.get())
@@ -139,6 +143,7 @@ def button_reset():
     global ok_to_switch
     update_frame5(globalride)
     ok_to_switch = True
+    save_changes = True
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
@@ -149,9 +154,8 @@ def file_save():
         if not importfile:
             file_saveas()
             return
-        
+
         pickle.dump(rides, open(importfile, "wb" ))
-    
 
 def file_saveas():
     if running:
@@ -180,7 +184,7 @@ def file_load():
     global rides
     global passed
     global importfile
-    
+
     filename = filedialog.askopenfilename(
             initialdir ="/",
             title = "h.",
@@ -195,14 +199,10 @@ def file_load():
         print(passed)
 
     importfile = filename
-    
-def file_exit():
-    if verify_same_string_entry():
-        root.destroy()
 
-    else:
-        #add dailog box please thanks
-        return
+def file_exit():
+    if check_before_continuing_alt():
+        root.destroy()
 
 #control----------------------------------------------------
 def control_start():
@@ -293,8 +293,26 @@ def check_before_continuing():
         ok_to_switch = True
         return True
 
-    if answer == "Cancel":
-        return False
+#check_before_continuing but its for exit button--------------------------
+
+def check_before_continuing_alt():
+    global ok_to_switch
+    if ok_to_switch or verify_same_string_entry():
+        return True
+
+    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
+        message_text="Do you want to save the updated data before exiting?")
+
+    answer = dialog.activate()
+
+    if answer == "Yes":
+        button_update()
+        root.destroy()
+
+    if answer == "No":
+        root.destroy()
+
+#verify_if_string_is_changed-------------------------------------------
 
 def verify_same_string_entry():
     if string_entry_name.get() == globalride.name:
@@ -303,7 +321,7 @@ def verify_same_string_entry():
                 if string_entry_loadtime.get() == globalride.loadtime:
                     if string_entry_duration.get() == globalride.duration:
                         return True
-                    
+
         except TclError as error:
             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
                 message_text=str(error))
