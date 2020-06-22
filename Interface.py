@@ -202,7 +202,7 @@ def file_load():
 
 def file_exit():
     if check_before_continuing_alt():
-        root.destroy()
+        check_before_save()
 
 #control----------------------------------------------------
 def control_start():
@@ -293,7 +293,7 @@ def check_before_continuing():
         ok_to_switch = True
         return True
 
-#check_before_continuing but its for exit button--------------------------
+#check_before_continuing but its for exit button------------------------
 
 def check_before_continuing_alt():
     global ok_to_switch
@@ -307,13 +307,27 @@ def check_before_continuing_alt():
 
     if answer == "Yes":
         button_update()
+        check_before_save()
+
+    if answer == "No":
+        root.destroy()
+
+#check_before_continuing but its for whether the file should be saved and its a bit different
+        
+def check_before_save():
+    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
+    message_text="Do you want to save the updated data before exiting?")
+
+    answer = dialog.activate()
+
+    if answer == "Yes":
+        file_save()
         root.destroy()
 
     if answer == "No":
         root.destroy()
 
 #verify_if_string_is_changed-------------------------------------------
-
 def verify_same_string_entry():
     if string_entry_name.get() == globalride.name:
         try:
