@@ -132,8 +132,12 @@ def button_update():
 
     updated = True
     if new == True:
-        rides.append(globalride)
-        new = False
+        if **:
+
+            
+        else:
+            rides.append(globalride)
+            new = False
 
     update_rides()
     ok_to_switch = True
