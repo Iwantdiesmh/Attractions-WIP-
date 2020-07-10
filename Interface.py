@@ -103,6 +103,16 @@ def button_update():
     global new
     global ok_to_switch
     save_changes = True
+    ride_entry_name = string_entry_name.get()
+
+    for ride in rides:
+        if ride is globalride:
+            continue
+
+        if ride.name == ride_entry_name:
+            dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                message_text="ridename [%s] already exists" % ride_entry_name)
+            return False
 
     try:
         globalride.name = str(string_entry_name.get())
@@ -112,35 +122,33 @@ def button_update():
 
     except TclError as error:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-        message_text=str(error))
-        return
+            message_text=str(error))
+        return False
 
     if int(string_entry_capacity.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-        message_text="don't put in a zero or negative number")
-        return
+            message_text="don't put in a zero or negative number")
+        return False
 
     if int(string_entry_loadtime.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-        message_text="don't put in a zero or negative number")
-        return
+            message_text="don't put in a zero or negative number")
+        return False
 
     if int(string_entry_duration.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-        message_text="don't put in a zero or negative number")
-        return
+            message_text="don't put in a zero or negative number")
+        return False
 
     updated = True
     if new == True:
-        if **:
-
-            
-        else:
-            rides.append(globalride)
-            new = False
+        rides.append(globalride)
+        new = False
 
     update_rides()
     ok_to_switch = True
+
+    return True
 
 #reset------------------------------------------------------
 def button_reset():
@@ -289,7 +297,9 @@ def check_before_continuing():
     answer = dialog.activate()
 
     if answer == "Yes":
-        button_update()
+        if not button_update():
+            return False
+        
         ok_to_switch = True
         return True
 
