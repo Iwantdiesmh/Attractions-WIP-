@@ -104,6 +104,7 @@ def button_update():
     global ok_to_switch
     save_changes = True
     ride_entry_name = string_entry_name.get()
+    negative_number = False
 
     for ride in rides:
         if ride is globalride:
@@ -123,30 +124,36 @@ def button_update():
     except TclError as error:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
             message_text=str(error))
+        negative_number = True
         return False
 
     if int(string_entry_capacity.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
             message_text="don't put in a zero or negative number")
+        negative_number = True
         return False
 
     if int(string_entry_loadtime.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
             message_text="don't put in a zero or negative number")
+        negative_number = True
         return False
 
     if int(string_entry_duration.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
             message_text="don't put in a zero or negative number")
+        negative_number = True
         return False
+    
 
     updated = True
     if new == True:
         rides.append(globalride)
         new = False
 
-    update_rides()
-    ok_to_switch = True
+    if negative_number == False:
+        update_rides()
+        ok_to_switch = True
 
     return True
 
