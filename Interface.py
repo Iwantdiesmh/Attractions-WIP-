@@ -115,18 +115,6 @@ def button_update():
                 message_text="ridename [%s] already exists" % ride_entry_name)
             return False
 
-    try:
-        globalride.name = str(string_entry_name.get())
-        globalride.capacity = int(string_entry_capacity.get())
-        globalride.loadtime = int(string_entry_loadtime.get())
-        globalride.duration = int(string_entry_duration.get())
-
-    except TclError as error:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-            message_text=str(error))
-        negative_number = True
-        return False
-
     if int(string_entry_capacity.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
             message_text="don't put in a zero or negative number")
@@ -144,6 +132,20 @@ def button_update():
             message_text="don't put in a zero or negative number")
         negative_number = True
         return False
+
+    try:
+        globalride.name = str(string_entry_name.get())
+        globalride.capacity = int(string_entry_capacity.get())
+        globalride.loadtime = int(string_entry_loadtime.get())
+        globalride.duration = int(string_entry_duration.get())
+
+    except TclError as error:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+            message_text=str(error))
+        negative_number = True
+        return False
+
+    
     
 
     updated = True
