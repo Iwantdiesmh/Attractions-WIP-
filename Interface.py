@@ -105,6 +105,7 @@ def button_update():
     save_changes = True
     ride_entry_name = string_entry_name.get()
     negative_number = False
+    
 
     for ride in rides:
         if ride is globalride:
@@ -145,9 +146,6 @@ def button_update():
         negative_number = True
         return False
 
-    
-    
-
     updated = True
     if new == True:
         rides.append(globalride)
@@ -168,6 +166,8 @@ def button_reset():
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
+    button_update()
+    
     if running:
         turn_off_rides()
 
@@ -213,16 +213,24 @@ def file_load():
 
     if filename == "":
         return
+        
+    try:
+        with open(filename, "rb") as picklefile:
+            rides = pickle.load(picklefile)
+            passed = pickle.load(picklefile)
+            print(passed)
 
-    with open(filename, "rb") as picklefile:
-        rides = pickle.load(picklefile)
-        passed = pickle.load(picklefile)
-        print(passed)
+    except:
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+            message_text="invalid file")
 
     importfile = filename
 
 def file_exit():
     if check_before_continuing_alt():
+        root.destroy()
+
+    else:
         check_before_save()
 
 #control----------------------------------------------------
