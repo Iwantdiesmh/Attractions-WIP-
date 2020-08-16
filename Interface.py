@@ -114,7 +114,7 @@ def button_update():
         if ride.name == ride_entry_name:
             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
                 message_text="ridename [%s] already exists" % ride_entry_name)
-            return False
+        return False
 
     if int(string_entry_capacity.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
