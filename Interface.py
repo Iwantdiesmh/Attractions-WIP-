@@ -108,13 +108,13 @@ def button_update():
     
 
     for ride in rides:
-        if ride is globalride:
+        if ride == globalride:
             continue
 
         if ride.name == ride_entry_name:
             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
                 message_text="ridename [%s] already exists" % ride_entry_name)
-        return False
+            return False
 
     if int(string_entry_capacity.get()) <= 0:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
@@ -175,8 +175,10 @@ def file_save():
         if not importfile:
             file_saveas()
             return
-
-        pickle.dump(rides, open(importfile, "wb" ))
+        
+    with open(importfile, "wb") as picklefile:
+        pickle.dump(rides, picklefile)
+        pickle.dump(passed, picklefile)
 
 def file_saveas():
     if running:
@@ -194,18 +196,17 @@ def file_saveas():
         if "." not in filename:
             filename += ".pickle"
 
-        with open(filename, "wb") as picklefile:
-            pickle.dump(rides, picklefile)
-            pickle.dump(passed, picklefile)
-
         global importfile
         importfile = filename
+        file_save()
 
 def file_load():
     global rides
     global passed
     global importfile
-
+    
+    print("fileload")
+    
     filename = filedialog.askopenfilename(
             initialdir ="/",
             title = "h.",
@@ -219,6 +220,7 @@ def file_load():
             rides = pickle.load(picklefile)
             passed = pickle.load(picklefile)
             print(passed)
+            update_rides()
 
     except:
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
@@ -325,7 +327,6 @@ def check_before_continuing():
         return True
 
 #check_before_continuing but its for exit button------------------------
-
 def check_before_continuing_alt():
     global ok_to_switch
     if ok_to_switch or verify_same_string_entry():
@@ -344,7 +345,6 @@ def check_before_continuing_alt():
         root.destroy()
 
 #check_before_continuing but its for whether the file should be saved and its a bit different
-        
 def check_before_save():
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
     message_text="Do you want to save the updated data before exiting?")
