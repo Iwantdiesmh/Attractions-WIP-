@@ -181,24 +181,25 @@ def file_save():
         pickle.dump(passed, picklefile)
 
 def file_saveas():
-    if running:
-        turn_off_rides()
+    if check_before_continuing:
+        if running:
+            turn_off_rides()
 
-    else:
-        filename = filedialog.asksaveasfilename(
-                initialdir ="/",
-                title = "h.",
-                filetypes = (("rides","*.pickle"),("all files","*.*")))
+        else:
+            filename = filedialog.asksaveasfilename(
+                    initialdir ="/",
+                    title = "h.",
+                    filetypes = (("rides","*.pickle"),("all files","*.*")))
 
-        if filename == "":
-            return
+            if filename == "":
+                return
 
-        if "." not in filename:
-            filename += ".pickle"
+            if "." not in filename:
+                filename += ".pickle"
 
-        global importfile
-        importfile = filename
-        file_save()
+            global importfile
+            importfile = filename
+            file_save()
 
 def file_load():
     global rides
