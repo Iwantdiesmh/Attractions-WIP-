@@ -12,6 +12,7 @@ ok_to_switch = True
 update_stats_ride = None
 importfile = None
 save_changes = True #true whenever you successfully changed the data
+edit_page = False
 
 def vi_int(int_var):
     try:
@@ -44,8 +45,10 @@ def button_create():
 def button_edit():
     global new
     global ok_to_switch
+    global edit_page
     new = False
     save_changes = False
+    edit_page = True
     
     global running
     if running == False:
@@ -102,60 +105,68 @@ def button_update():
     global updated
     global new
     global ok_to_switch
+    global edit_page
     save_changes = True
     ride_entry_name = string_entry_name.get()
     negative_number = False
     
+    if edit_page == True:
+        for ride in rides:
+            if ride == globalride:
+                continue
 
-    for ride in rides:
-        if ride == globalride:
-            continue
+            if ride.name == ride_entry_name:
+                dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                    message_text="ridename [%s] already exists" % ride_entry_name)
+                return False
 
-        if ride.name == ride_entry_name:
+        if int(string_entry_capacity.get()) <= 0:
             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-                message_text="ridename [%s] already exists" % ride_entry_name)
+                message_text="don't put in a zero or negative number")
+            negative_number = True
             return False
 
-    if int(string_entry_capacity.get()) <= 0:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-            message_text="don't put in a zero or negative number")
-        negative_number = True
-        return False
+        if int(string_entry_loadtime.get()) <= 0:
+            dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                message_text="don't put in a zero or negative number")
+            negative_number = True
+            return False
 
-    if int(string_entry_loadtime.get()) <= 0:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-            message_text="don't put in a zero or negative number")
-        negative_number = True
-        return False
+        if int(string_entry_duration.get()) <= 0:
+            dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                message_text="don't put in a zero or negative number")
+            negative_number = True
+            return False
 
-    if int(string_entry_duration.get()) <= 0:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-            message_text="don't put in a zero or negative number")
-        negative_number = True
-        return False
+        try:
+            globalride.name = str(string_entry_name.get())
+            globalride.capacity = int(string_entry_capacity.get())
+            globalride.loadtime = int(string_entry_loadtime.get())
+            globalride.duration = int(string_entry_duration.get())
 
-    try:
-        globalride.name = str(string_entry_name.get())
-        globalride.capacity = int(string_entry_capacity.get())
-        globalride.loadtime = int(string_entry_loadtime.get())
-        globalride.duration = int(string_entry_duration.get())
+        except TclError as error:
+            dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                message_text=str(error))
+            negative_number = True
+            return False
 
-    except TclError as error:
-        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
-            message_text=str(error))
-        negative_number = True
-        return False
+        updated = True
+        if new == True:
+            rides.append(globalride)
+            new = False
 
-    updated = True
-    if new == True:
-        rides.append(globalride)
-        new = False
+        if negative_number == False:
+            update_rides()
+            ok_to_switch = True
 
-    if negative_number == False:
-        update_rides()
-        ok_to_switch = True
+        edit_page = False
+        return True
 
-    return True
+        
+    else:
+            dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
+                message_text=str("Please hit the edit button first"))
+            
 
 #reset------------------------------------------------------
 def button_reset():
@@ -181,7 +192,7 @@ def file_save():
         pickle.dump(passed, picklefile)
 
 def file_saveas():
-    if check_before_continuing:
+    if check_before_continuing():
         if running:
             turn_off_rides()
 
