@@ -336,7 +336,7 @@ def check_before_continuing():
 
     if answer == "No":
         ok_to_switch = True
-        return True
+        return False
 
 #check_before_continuing but its for exit button------------------------
 def check_before_continuing_alt():
