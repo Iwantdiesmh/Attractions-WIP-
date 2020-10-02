@@ -241,11 +241,13 @@ def file_load():
     importfile = filename
 
 def file_exit():
-    if check_before_continuing_alt():
-        root.destroy()
+    if check_before_continuing:        
+        if check_before_continuing_alt():
+            root.destroy()
 
-    else:
-        check_before_save()
+        else:
+            check_before_save()
+
 
 #control----------------------------------------------------
 def control_start():
@@ -325,16 +327,16 @@ def check_before_continuing():
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
         message_text="Do you want to save the updated data before continuing?")
 
-    answer = dialog.activate()
+    answer1 = dialog.activate()
 
-    if answer == "Yes":
+    if answer1 == "Yes":
         if not button_update():
             return False
         
         ok_to_switch = True
         return True
 
-    if answer == "No":
+    if answer1 == "No":
         ok_to_switch = True
         return False
 
