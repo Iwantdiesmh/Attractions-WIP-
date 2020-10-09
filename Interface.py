@@ -167,7 +167,6 @@ def button_update():
             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
                 message_text=str("Please hit the edit button first"))
             
-
 #reset------------------------------------------------------
 def button_reset():
     global ok_to_switch
