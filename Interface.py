@@ -4,11 +4,11 @@ from Attributes import Attraction
 import Pmw
 import pickle
 running = False
-passed = 0
+time_passed = 0
 globalride = None
 updated = False
 new = False
-ok_to_switch = True
+ride_variables_saved = True
 update_stats_ride = None
 importfile = None
 save_changes = True #true whenever you successfully changed the data
@@ -30,7 +30,7 @@ def button_create():
     global new
     global baypass
     new = True
-    ok_to_switch = False
+    ride_variables_saved = False
     save_changes = False
 
     global globalride
@@ -44,7 +44,7 @@ def button_create():
 #edit-------------------------------------------------------
 def button_edit():
     global new
-    global ok_to_switch
+    global ride_variables_saved
     global edit_page
     new = False
     save_changes = False
@@ -60,7 +60,7 @@ def button_edit():
             selection = sels[0]
             ride = determineRide(selection)
             update_frame5(ride)
-            ok_to_switch = False
+            ride_variables_saved = False
 
     else:
         turn_off_rides()
@@ -86,8 +86,8 @@ def button_delete():
         else:
             selection = sels[0]
             selected_ride = determineRide(selection)
-            print(ok_to_switch, selected_ride, globalride)
-            if ok_to_switch == False and selected_ride == globalride:
+            print(ride_variables_saved, selected_ride, globalride)
+            if ride_variables_saved == False and selected_ride == globalride:
                 dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Deleting without saving update")
 
             else:
@@ -104,7 +104,7 @@ def button_delete():
 def button_update():
     global updated
     global new
-    global ok_to_switch
+    global ride_variables_saved
     global edit_page
     save_changes = True
     ride_entry_name = string_entry_name.get()
@@ -157,7 +157,7 @@ def button_update():
 
         if negative_number == False:
             update_rides()
-            ok_to_switch = True
+            ride_variables_saved = True
 
         edit_page = False
         return True
@@ -169,9 +169,9 @@ def button_update():
             
 #reset------------------------------------------------------
 def button_reset():
-    global ok_to_switch
+    global ride_variables_saved
     update_frame5(globalride)
-    ok_to_switch = True
+    ride_variables_saved = True
     save_changes = True
 
 #menu[file]-------------------------------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ def file_save():
         
     with open(importfile, "wb") as picklefile:
         pickle.dump(rides, picklefile)
-        pickle.dump(passed, picklefile)
+        pickle.dump(rides, picklefile)
 
 def file_saveas():
     if check_before_continuing():
@@ -213,7 +213,7 @@ def file_saveas():
 
 def file_load():
     global rides
-    global passed
+    global time_passed
     global importfile
     
     print("fileload")
@@ -229,8 +229,8 @@ def file_load():
     try:
         with open(filename, "rb") as picklefile:
             rides = pickle.load(picklefile)
-            passed = pickle.load(picklefile)
-            print(passed)
+            time_passed = pickle.load(picklefile)
+            print(time_passed)
             update_rides()
 
     except:
@@ -241,7 +241,7 @@ def file_load():
 
 def file_exit():
     if check_before_continuing:        
-        if check_before_continuing_alt():
+        if check_before_exiting():
             root.destroy()
 
         else:
@@ -281,7 +281,7 @@ def find_state(ride):
 
 #update----------------------------------------------------------------------------------------------------------
 def update_message():
-    message = str('Running = %s | Minutes Passed = %s' %(running, passed))
+    message = str('Running = %s | Minutes Passed = %s' %(running, time_passed))
     string_entry_status.set(message)
 
 def update_statistics(ride):
@@ -305,7 +305,7 @@ def run_the_ride(ride):
 #run_all_rides------------------------------------------------
 def run_all_rides():
     '''calls run_the_ride for every value in the list then sleeps for a in-game minute'''
-    global passed
+    global time_passed
     if not running:
         update_message()
         return
@@ -314,13 +314,13 @@ def run_all_rides():
         run_the_ride(ride)
         update_message()
 
-    passed += 1
+    time_passed += 1
     root.after(1000, run_all_rides)
 
 #yes/no/cancel----------------------------------------------------------------------------------------------------
 def check_before_continuing():
-    global ok_to_switch
-    if ok_to_switch or verify_same_string_entry():
+    global ride_variables_saved
+    if ride_variables_saved or identical_ride_variables():
         return True
 
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
@@ -332,17 +332,17 @@ def check_before_continuing():
         if not button_update():
             return False
         
-        ok_to_switch = True
+        ride_variables_saved = True
         return True
 
     if answer1 == "No":
-        ok_to_switch = True
+        ride_variables_saved = True
         return False
 
 #check_before_continuing but its for exit button------------------------
-def check_before_continuing_alt():
-    global ok_to_switch
-    if ok_to_switch or verify_same_string_entry():
+def check_before_exiting():
+    global ride_variables_saved
+    if ride_variables_saved or identical_ride_variables():
         return True
 
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
@@ -372,7 +372,7 @@ def check_before_save():
         root.destroy()
 
 #verify_if_string_is_changed-------------------------------------------
-def verify_same_string_entry():
+def identical_ride_variables():
     if string_entry_name.get() == globalride.name:
         try:
             if string_entry_capacity.get() == globalride.capacity:
@@ -387,7 +387,7 @@ def verify_same_string_entry():
     return False
 
 #finding rides----------------------------------------------------------------------------------------------------
-def selectionCommand():
+def switch_to_different_ride():
     """Callback when an item is selected"""
     if check_before_continuing():
         sels = box.getcurselection()
@@ -449,7 +449,7 @@ frame1.grid(row=0,column=0)
 selection = None
 box = Pmw.ScrolledListBox(frame1,items=rides,labelpos="nw",
             label_text="Rides",listbox_height = 6,
-            selectioncommand=selectionCommand,usehullsize = 1,
+            switch_to_different_ride=switch_to_different_ride,usehullsize = 1,
             hull_width = 200,hull_height = 250)
 
 box.pack(fill="both", expand=1, padx=5, pady=5)
