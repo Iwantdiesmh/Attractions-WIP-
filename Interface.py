@@ -240,13 +240,10 @@ def file_load():
     importfile = filename
 
 def file_exit():
-    if check_before_continuing:        
-        if check_before_exiting():
-            root.destroy()
-
-        else:
-            check_before_save()
-
+    if check_before_exiting():
+        # save the data
+        #  TODO:  Exit the program instdad of root.destroy()
+        root.destroy()
 
 #control----------------------------------------------------
 def control_start():
@@ -333,14 +330,18 @@ def check_before_continuing():
             return False
         
         ride_variables_saved = True
+        dialog.deactivate()
         return True
 
     if answer1 == "No":
         ride_variables_saved = True
+        dialog.deactivate()
         return False
 
 #check_before_continuing but its for exit button------------------------
 def check_before_exiting():
+    """Returns True if OK to exit; False otherwise"""
+    #  TODO:  Make the above actually be correct
     global ride_variables_saved
     if ride_variables_saved or identical_ride_variables():
         return True
@@ -351,13 +352,22 @@ def check_before_exiting():
     answer = dialog.activate()
 
     if answer == "Yes":
+        #  TODO:  Save the data and return True
         button_update()
         check_before_save()
 
     if answer == "No":
+        #  TODO:  Only destroy in file_exit; return True
+
         root.destroy()
 
+        #   TODO:  If answer == "Cancel" return False
+
+    #  TODO:  Call deactivate before each of the return's above
+    dialog.deactivate()
+    
 #check_before_continuing but its for whether the file should be saved and its a bit different
+#  TODO:  You don't need this function;  delete it
 def check_before_save():
     dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
     message_text="Do you want to save the updated data before exiting?")
@@ -370,6 +380,9 @@ def check_before_save():
 
     if answer == "No":
         root.destroy()
+
+    dialog.deactivate()
+    
 
 #verify_if_string_is_changed-------------------------------------------
 def identical_ride_variables():
@@ -449,7 +462,7 @@ frame1.grid(row=0,column=0)
 selection = None
 box = Pmw.ScrolledListBox(frame1,items=rides,labelpos="nw",
             label_text="Rides",listbox_height = 6,
-            switch_to_different_ride=switch_to_different_ride,usehullsize = 1,
+            selectioncommand=switch_to_different_ride,usehullsize = 1,
             hull_width = 200,hull_height = 250)
 
 box.pack(fill="both", expand=1, padx=5, pady=5)
