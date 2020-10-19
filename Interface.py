@@ -35,7 +35,7 @@ def button_create():
 
     global globalride
     if running == False:
-        globalride = Attraction(1,1,1,'~~~') #put something in the params
+        globalride = Attraction(1,1,1,'None') #put something in the params
         update_frame5(globalride)
 
     else:
@@ -242,8 +242,8 @@ def file_load():
 def file_exit():
     if check_before_exiting():
         # save the data
-        #  TODO:  Exit the program instdad of root.destroy()
-        root.destroy()
+        #  TODO:  Exit the program instdad of sys.exit()
+        sys.exit()
 
 #control----------------------------------------------------
 def control_start():
@@ -354,35 +354,21 @@ def check_before_exiting():
     if answer == "Yes":
         #  TODO:  Save the data and return True
         button_update()
-        check_before_save()
+        file_save()
+        dialog.deactivate()
+        return True
 
     if answer == "No":
         #  TODO:  Only destroy in file_exit; return True
+        dialog.deactivate()
+        return True
 
-        root.destroy()
+    if answer == "Cancel":
+        return False
 
-        #   TODO:  If answer == "Cancel" return False
+        #   TODO:  If answer == "Cancel" return False 
 
-    #  TODO:  Call deactivate before each of the return's above
-    dialog.deactivate()
-    
-#check_before_continuing but its for whether the file should be saved and its a bit different
-#  TODO:  You don't need this function;  delete it
-def check_before_save():
-    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Yes","No","Cancel"),
-    message_text="Do you want to save the updated data before exiting?")
-
-    answer = dialog.activate()
-
-    if answer == "Yes":
-        file_save()
-        root.destroy()
-
-    if answer == "No":
-        root.destroy()
-
-    dialog.deactivate()
-    
+    #  TODO:  Call deactivate before each of the return's above   
 
 #verify_if_string_is_changed-------------------------------------------
 def identical_ride_variables():
