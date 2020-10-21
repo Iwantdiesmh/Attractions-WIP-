@@ -3,6 +3,7 @@ from tkinter import filedialog
 from Attributes import Attraction
 import Pmw
 import pickle
+import sys
 running = False
 time_passed = 0
 globalride = None
@@ -13,6 +14,7 @@ update_stats_ride = None
 importfile = None
 save_changes = True #true whenever you successfully changed the data
 edit_page = False
+
 
 def vi_int(int_var):
     try:
@@ -243,6 +245,7 @@ def file_exit():
     if check_before_exiting():
         # save the data
         #  TODO:  Exit the program instdad of sys.exit()
+        root.destroy()
         sys.exit()
 
 #control----------------------------------------------------
@@ -434,6 +437,7 @@ def create_the_ride(loadtime, duration, capacity, name):
 #stuff------------------------------------------------------------------------------------------------------------
 create_the_rides()
 root = Tk()
+root.protocol("WM_DELETE_WINDOW", file_exit)
 root.title("Amusement Park-ish")
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
