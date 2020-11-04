@@ -178,7 +178,7 @@ def button_reset():
 
 #menu[file]-------------------------------------------------------------------------------------------------------
 def file_save():
-    button_update()
+    #button_update()
     
     if running:
         turn_off_rides()
