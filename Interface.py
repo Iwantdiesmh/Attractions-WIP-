@@ -25,7 +25,7 @@ def vi_int(int_var):
 
 #Turn off the #@($*#)$#@ rides please---------------------------------------------------------------------
 def turn_off_rides():
-    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please turn off the rides")
+    dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("Ok",),message_text="Please stop the rides")
     
 #Buttons[create]------------------------------------------------------------------------------------------------
 def button_create():
@@ -161,9 +161,10 @@ def button_update():
             update_rides()
             ride_variables_saved = True
 
+        dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("close",),
+            message_text=str("Ride has updated succesfully"))
         edit_page = False
         return True
-
         
     else:
             dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("ok",),
@@ -190,7 +191,7 @@ def file_save():
         
     with open(importfile, "wb") as picklefile:
         pickle.dump(rides, picklefile)
-        pickle.dump(rides, picklefile)
+        pickle.dump(time_passed, picklefile)
 
 def file_saveas():
     if check_before_continuing():
@@ -281,7 +282,17 @@ def find_state(ride):
 
 #update----------------------------------------------------------------------------------------------------------
 def update_message():
-    message = str('Running = %s | Minutes Passed = %s' %(running, time_passed))
+    
+    bandage_variable_running = None
+
+    if running == True:
+        bandage_variable_running = str('On')
+
+    else:
+        bandage_variable_running = str('Off')
+    
+    message = str(''' Status of rides = %s
+Minutes Passed = %s''' %(bandage_variable_running, time_passed))
     string_entry_status.set(message)
 
 def update_statistics(ride):
