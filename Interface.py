@@ -30,7 +30,9 @@ def turn_off_rides():
 #Buttons[create]------------------------------------------------------------------------------------------------
 def button_create():
     global new
-    global baypass
+    if not check_before_continuing():
+        return
+    
     new = True
     ride_variables_saved = False
     save_changes = False
@@ -163,7 +165,6 @@ def button_update():
 
         dialog = Pmw.MessageDialog(title="Amusement Park-ish",buttons=("close",),
             message_text=str("Ride has updated succesfully"))
-        edit_page = False
         return True
         
     else:
@@ -350,7 +351,7 @@ def check_before_continuing():
     if answer1 == "No":
         ride_variables_saved = True
         dialog.deactivate()
-        return False
+        return True
 
 #check_before_continuing but its for exit button------------------------
 def check_before_exiting():
@@ -502,15 +503,6 @@ ok_button2.pack(side=LEFT)
 ok_button3 = Button(frame3,text="Delete",width=9,height=1,command=button_delete)
 ok_button3.pack(side=LEFT)
 
-#Frame 4--------------------------------------------------------------------------------------------------------
-frame4 = Frame(root)
-frame4.grid(row=2,column=1)
-
-ok_button4 = Button(frame4,text="Update",width=13,height=1,command=button_update)
-ok_button4.pack(side=LEFT)
-ok_button5 = Button(frame4,text="Reset",width=13,height=1,command=button_reset)
-ok_button5.pack(side=LEFT)
-
 #Frame 5--------------------------------------------------------------------------------------------------------
 frame5 = Frame(root)
 frame5.grid(row=0,column=1,sticky='NSEW')
@@ -533,13 +525,22 @@ string_entry_value.grid(row=7,column=0,sticky=W)
 
 Label(frame5,text='Name').grid(row=0,column=0,sticky=W)
 Label(frame5,text='Capacity').grid(row=2,column=0,sticky=W)
-Label(frame5,text='Loadtime').grid(row=4, column=0,sticky=W)
+Label(frame5,text='Load Time').grid(row=4, column=0,sticky=W)
 Label(frame5,text='Duration').grid(row=6,column=0,sticky=W)
 
 Label(frame5,text=' ').grid(row=8,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=9,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=10,column=0,sticky=W)
 Label(frame5,text=' ').grid(row=11,column=0,sticky=W)
+
+#Frame 6--------------------------------------------------------------------------------------------------------
+frame6 = Frame(frame5)
+frame6.grid(row=12,column=0)
+
+ok_button4 = Button(frame6,text="Update",width=13,height=1,command=button_update)
+ok_button4.pack(side=LEFT)
+ok_button5 = Button(frame6,text="Reset",width=13,height=1,command=button_reset)
+ok_button5.pack(side=LEFT)
 
 #Frame Middle-----------------------------------------------------------------------------------------------------------
 frame_middle = Frame(root)
